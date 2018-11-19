@@ -1,0 +1,27 @@
+{{> header title="Confirmed Notification" }}
+
+<body class="text-center">
+  
+  {{> nav-loggedout }}
+  
+  <div class="container mt-4">
+    <div class="col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
+      
+      <h1 class="h5 text-center mt-5">Notification</h1>
+      
+      {{> flash }}
+      
+      <div class="container-fluid p-3 mt-3 confirmed-bg">
+
+        <a href="/account" id="backButton" class="btn confirmed-gray-btn btn-sm text-white btn-block mt-2">Back to Account</a>
+        
+      </div>
+      
+    </div>
+  </div>
+  
+  {{> footer}}
+
+  {{> bootstrapjs}}
+    
+</body>

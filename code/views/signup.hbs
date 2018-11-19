@@ -1,0 +1,68 @@
+{{> header title="Sign Up" }}
+
+<body class="text-center">
+  
+  {{> nav-loggedout }}
+  
+  <div class="container mt-4">
+    <div class="mt-5 col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
+      
+      {{> flash }}
+      
+      {{#if refer}}
+        <div class="alert alert-success" role="alert" style="margin-left:auto; margin-right: auto;">
+          <div class="text-center" style="font-weight: 800; margin-bottom: 5px;">Referral Code Activated</div>You'll get a 10% discount on subscriptions created on {{DOMAIN}}.
+        </div>
+      {{/if}}
+      
+      <div class="container-fluid p-3 pb-4 mt-3 confirmed-panel">
+        <h1 class="h5 text-center mt-3 mb-4">Sign Up for Confirmed VPN</h1>
+        <form action="/signup" onsubmit="return validatePasswordMatch()" method="POST">
+          <input type="hidden" id="type" name="type" value="email">
+          <input type="hidden" id="browser" name="browser" value="true">
+          <p style="font-size: 11px; margin-bottom: 4px;">Email</p>
+          <label for="email" class="sr-only">Email Address</label>
+          <input type="email" id="email" class="form-control mb-2" name="email" placeholder="Email Address" required autofocus>
+          <p style="font-size: 11px; margin-bottom: 4px;">Password</p>
+          <label for="password" class="sr-only">Password</label>
+          <input type="password" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom: 0px;" id="password" class="form-control" name="password" placeholder="Password" required>
+          <label for="verifyPassword" class="sr-only">Confirm Password</label>
+          <input type="password" id="verifyPassword" style="border-top-left-radius: 0px; border-top-right-radius: 0px; margin-bottom: 8px;" class="form-control" placeholder="Verify Password" required>
+          <p style="font-size: 11px; margin-bottom: 4px;">Referral Code</p>
+          {{#if refer}}
+            <input type="text" id="refer" readonly="readonly" class="form-control mb-2" name="refer" placeholder="" value="{{refer}}">
+          {{else}}
+            <input type="text" id="refer" class="form-control mb-2" name="refer" placeholder="Optional">
+          {{/if}}
+          <!-- {{{ captcha }}} -->
+          <button id="signupButton" type="submit" class="btn confirmed-blue-btn btn-sm text-white btn-block mt-3">Sign Up</button>
+        </form>
+      </div>
+      
+      <div class="container-fluid p-3 mt-4 confirmed-panel text-center">
+        <p style="font-size: 12px; margin-bottom:4px;" class="text-muted">Already signed up?</p>
+        <a href="/signin" class="btn confirmed-blue-btn btn-sm text-white btn-block">Sign In</a>
+      </div>
+      
+    </div>
+  </div>
+  
+  <script>
+    function validatePasswordMatch() {
+      if (document.getElementById("password").value != document.getElementById("verifyPassword").value) {
+        bootbox.alert("Passwords must match.");
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+  </script>
+
+  {{> footer}}
+
+  {{> bootstrapjs}}
+  
+  <script src="/js/bootbox.min.js"></script>
+  
+</body>

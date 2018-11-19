@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing modules...
+      - npm install --global mocha
+  pre_build:
+    commands:
+      - echo Setup Git to use AWS IAM Instance Profile
+      - export HOME=/root
+      - git config --global credential.helper '!aws codecommit credential-helper $@'
+      - git config --global credential.UseHttpPath true
+      - echo Installing source NPM dependencies...
+      - mkdir -p logs
+      - cd code
+      - echo Installing shared with the right region...
+      - "npm install --save git+https://git-codecommit.$AWS_REGION.amazonaws.com/v1/repos/$ENVIRONMENT-Shared#$GIT_BRANCH"
+      - npm install
+  build:
+    commands:
+      - echo Build started
+      - echo Running tests...
+      - npm test
+  post_build:
+    commands:
+      - echo Build completed
+artifacts:
+  files:
+    - '**/*'

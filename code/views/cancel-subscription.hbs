@@ -1,0 +1,32 @@
+{{> header title="Cancel Subscription" }}
+
+<body class="text-center">
+
+  {{> nav }}
+
+  <div class="container mt-4">
+    <div class="col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
+      
+      <h1 class="h5 text-center mt-5">Cancel Subscription</h1>
+      
+      {{> flash }}
+      
+      <div class="container-fluid p-3 mt-3 confirmed-panel">
+        <form id="cancel-sub-form" action="/cancel-subscription" method="POST">
+          <input type="hidden" id="receiptId" name="receiptId" value="{{this.receiptId}}">
+          <p style="font-size: 13px; line-height: 17px;">Are you sure you want to cancel your subscription? Your service will be terminated immediately and you will have to re-subscribe to continue securing your connections.</p>
+          <p style="font-size: 13px; line-height: 17px; margin-top: 10px;">Please tell us why you're cancelling:</p>
+          <textarea id="reason" name="reason" form="cancel-sub-form" placeholder="Reason for Cancellation" autofocus="true" style="padding: 4px; width: 100%; margin-top: 4px; height: 64px; resize: none; border-radius: 2px"></textarea>
+          <button id="cancelSubscriptionButton" type="submit" class="btn confirmed-red-btn btn-sm text-white btn-block mt-2">Yes, Cancel Subscription</button>
+        </form>
+        <a href="/account" id="backButton" class="btn confirmed-blue-btn btn-sm text-white btn-block mt-2">No, Don't Cancel Subscription</a>
+      </div>
+      
+    </div>
+  </div>
+
+  {{> footer}}
+
+  {{> bootstrapjs}}
+
+</body>

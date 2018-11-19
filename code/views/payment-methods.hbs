@@ -1,0 +1,130 @@
+{{> header title="Payment Methods" }}
+
+<body class="text-center">
+  
+  {{> nav }}
+  
+  <div class="container mt-4">
+    <div class="col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
+      
+      <h1 class="h6 text-center mt-5">Payment Methods</h1>
+
+      {{> flash }}
+      
+      <div class="alert alert-danger" id="error" role="alert" style="display:none; margin-left:auto; margin-right: auto;"></div>
+      
+      <div class="container-fluid p-3 mt-3 confirmed-panel">
+        {{#each methods}}
+          <p class="confirmed-blue" style="margin-top: 4px; font-size: 14px; margin-bottom: 4px;">{{ this.brand }} Ending In -{{ this.last4 }}
+          </p>
+          <p style="font-weight: 300; font-size: 12px; color: #666; margin-bottom: 2px;">
+              Expires {{this.exp_month}}/{{this.exp_year}}
+          </p>
+          {{#if this.is_default}}
+          <p style="margin-bottom: 5px; font-size: 12px;">This is your default payment method.</p>
+          {{/if}}
+          <button id="del{{id}}" onclick="deleteMethod('{{this.id}}')" class="btn confirmed-red-btn btn-sm btn-block">Delete -{{ this.last4 }} {{ this.brand }} Card</button>
+          {{#unless this.is_default}}
+          <button id="default{{id}}"  onclick="setDefaultCard('{{this.id}}')" class="btn confirmed-gray-btn btn-sm btn-block">Set -{{ this.last4 }} {{ this.brand }} as Default</button>
+          {{/unless}}
+          <hr>
+        {{else}}
+        <h1 style="text-align:center; font-size: 14px; margin-top: 15px; color: #999; margin-bottom:12px;">No payment methods.</h1>
+        {{/each}}
+        <a href="/add-new-card" class="btn confirmed-blue-btn btn-sm btn-block">Add New Card</a>
+        
+      </div>
+      
+      <div class="container-fluid p-3 mt-3 confirmed-bg">
+        <a href="/account" class="btn confirmed-gray-btn btn-sm btn-block">Back to Account</a>
+      </div>
+      
+    </div>
+  </div>
+  
+  {{> footer}}
+
+  {{> bootstrapjs}}
+  
+  <script>
+    function showError(message) {
+      document.getElementById("error").style.display = "block";
+      document.getElementById("error").innerText = message;
+    }
+    
+    function hideError() {
+      document.getElementById("error").style.display = "none";
+      document.getElementById("error").innerText = "";
+    }
+    
+    function deleteMethod(id) {
+      hideError();
+      
+      if (confirm("Are you sure you want to delete this payment method?")) {
+      
+        document.getElementById("del" + id).disabled = true;
+      
+    		var http = new XMLHttpRequest();
+    		var url = "delete-card";
+    		var params = "cardId=" + id
+    		http.open("POST", url, true);
+        http.responseType = 'json';
+    		http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    		http.onreadystatechange = function() {
+    		    if (http.readyState == 4) {
+      				if (http.status == 200) {
+                location.reload()
+      				}
+      				else {
+                document.getElementById("del" + id).disabled = false;
+                if (http.response == null) {
+                  showError("Error deleting card: No response.")
+                }
+                else {
+      				    showError("Error deleting card: " + http.response.message)
+                }
+      				}
+    		    }
+    		}
+      
+    		http.send(params);
+      }
+      
+    }
+    
+    function setDefaultCard(id) {
+      hideError();
+      
+      document.getElementById("default" + id).disabled = true;
+    
+  		var http = new XMLHttpRequest();
+  		var url = "set-default-card";
+  		var params = "cardId=" + id
+  		http.open("POST", url, true);
+      http.responseType = 'json';
+  		http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  		http.onreadystatechange = function() {
+		    if (http.readyState == 4) {
+  				if (http.status == 200) {
+            location.reload()
+  				}
+  				else {
+            document.getElementById("default" + id).disabled = false;
+            if (http.response == null) {
+              showError("Error setting default card: No response.")
+            }
+            else {
+  				    showError("Error setting default card: " + http.response.message)
+            }
+  				}
+		    }
+  		}
+    
+  		http.send(params);
+      
+    }
+  </script>
+  
+</body>

@@ -1,0 +1,38 @@
+version: 0.0
+os: linux 
+files:
+  - source: code
+    destination: /home/node/main
+permissions:
+  - object: /home/node
+    pattern: "main"
+    owner: node
+    group: node
+    type:
+      - directory
+  - object: /home/node/main
+    owner: node
+    group: node
+    type:
+      - file
+  - object: /home/node/main
+    owner: node
+    group: node
+    type:
+      - directory
+hooks:
+  BeforeInstall:
+    - location: scripts/clear-existing.sh
+      timeout: 300
+      runas: node
+  AfterInstall:
+    - location: scripts/npm-install.sh
+      timeout: 300
+      runas: node
+    - location: scripts/start-node.sh
+      timeout: 300
+      runas: node
+  ValidateService:
+    - location: scripts/restart-codedeploy.sh
+      timeout: 300
+      runas: root

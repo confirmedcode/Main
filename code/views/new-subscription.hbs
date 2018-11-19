@@ -1,0 +1,439 @@
+{{> header title="New Subscription" }}
+
+<body>
+  
+  {{#if browser}}
+  {{> nav }}
+  {{/if}}
+  
+  <!-- Progress Modal -->
+  <div class="modal fade" data-backdrop="static" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <p>Processing...</p>
+          <div class="progress">
+            <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+              <span class="sr-only">Processing...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <form id="subscriptionForm" action="/new-subscription" method="POST">
+    <input type="hidden" id="token" name="token" value="">
+    <input type="hidden" id="source" name="source" value="">
+    <input type="hidden" id="is3ds" name="is3ds" value="false">
+    <input type="hidden" id="plan" name="plan" value="{{ plan }}">
+    <input type="hidden" id="browser" name="browser" value="{{ browser }}">
+    <input type="hidden" id="upgrade" name="upgrade" value="{{ upgrade }}">
+    <input type="hidden" id="trial" name="trial" value="{{ trial }}">
+    <input type="hidden" id="browserLocale" name="browserLocale" value="{{ browserLocale }}">
+    <input type="hidden" id="paramLocale" name="paramLocale" value="{{ paramLocale }}">
+  </form>
+  
+  <div class="container mt-3">
+    
+    <div class="row">
+      
+      {{> flash }}
+      
+      <div class="col-12 text-center mb-2 mt-1">
+    		<p class="h5">
+          {{#if trial}}
+          Start Free 1 Week Trial
+          {{else}}
+          Start New Subscription
+          {{/if}}
+        </p>
+      </div>
+      
+      <div class="col-xl-6 offset-xl-3 col-md-8 offset-md-2 col-sm-8 offset-sm-2 text-center">
+        {{#if referredBy}}
+        <div class="alert alert-success" role="alert">
+          <div class="text-center" style="font-weight: 800; margin-bottom: 3px; font-size: 13px;">Referral Code Activated</div>
+          <p style="font-size: 12px;" class="mb-0">You get a 10% discount on the prices below.</p>
+        </div>
+        {{/if}}
+      </div>
+      
+      <div class="col-xl-6 offset-xl-3 col-md-8 offset-md-2 col-sm-8 offset-sm-2 text-center confirmed-panel" style="padding-left: 20px; padding-right: 20px;">
+        <p class="h6">
+          Choose Plan Type
+        </p>
+  	  	<h1 class="{{#if browser}}mb-3{{/if}}" style="font-size: 13px; line-height: 18px; font-weight: 300; color: #888;">
+          {{#if trial}}
+          You'll only be billed after the trial, and you can cancel any time.
+          {{else}}
+          Get 2 months free for annual billing, and you can cancel any time.
+          {{/if}}
+          <br/>
+          All prices include taxes and VAT.
+        </h1>
+      
+        <div class="mb-2" style="text-align: center; border-radius:8px; width: 100%; margin-right: auto; margin-left: auto; padding: 0px; margin-top: 0px;">
+          <select class="locale-select" id="countrySelector">
+            <option value="en-us">United States (USD)</option>
+            <option value="de-at">Austria (EUR)</option>
+            <option value="nl-be">Belgium (EUR)</option>
+            <option value="bg-bg">Bulgaria (BGN)</option>
+            <option value="hr-hr">Croatia (HRK)</option>
+            <option value="el-cy">Cyprus (EUR)</option>
+            <option value="cs-cz">Czech Republic (CZK)</option>
+            <option value="da-dk">Denmark (DKK)</option>
+            <option value="et-ee">Estonia (EUR)</option>
+            <option value="fi-fi">Finland (EUR)</option>
+            <option value="fr-fr">France (EUR)</option>
+            <option value="de-de">Germany (EUR)</option>
+            <option value="el-gr">Greece (EUR)</option>
+            <option value="hu-hu">Hungary (HUF)</option>
+            <option value="ga-ie">Ireland (EUR)</option>
+            <option value="it-it">Italy (EUR)</option>
+            <option value="lv-lv">Latvia (EUR)</option>
+            <option value="lt-lt">Lithuania (EUR)</option>
+            <option value="fr-lu">Luxembourg (EUR)</option>
+            <option value="mt-mt">Malta (EUR)</option>
+            <option value="nl-nl">Netherlands (EUR)</option>
+            <option value="pl-pl">Poland (PLN)</option>
+            <option value="pt-pt">Portugal (EUR)</option>
+            <option value="ro-ro">Romania (RON)</option>
+            <option value="sk-sk">Slovakia (EUR)</option>
+            <option value="sl-si">Slovenia (EUR)</option>
+            <option value="es-es">Spain (EUR)</option>
+            <option value="sv-se">Sweden (SEK)</option>
+            <option value="tr-tr">Turkey (TRY)</option>
+            <option value="en-gb">United Kingdom (GBP)</option>
+            <option value="en-us">Not Listed (USD)</option>
+          </select>
+        </div>
+        
+        <div class="btn-group btn-group-toggle text-white {{#if browser}}mb-3{{/if}}" data-toggle="buttons">
+          <label id="monthlyPlan" class="btn plan-button confirmed-btn-shadow" style="width: 140px; height: 76px;">
+            <input type="radio" name="planType" id="monthlyPlan" autocomplete="off">
+            <p class="h6" style="margin-top: 5px; font-size: 15px; font-weight: 600;">
+              Monthly
+            </p>
+            <p class="h6" style="margin-top: 12px; font-size: 12px;">
+              {{ month }}/month
+            </p>
+          </label>
+          <label id="annualPlan" class="btn plan-button confirmed-btn-shadow" style="width: 140px; height: 76px;">
+            <input type="radio" name="planType" id="annualPlan" autocomplete="off">
+            <p class="h6" style="margin-bottom: 4px; margin-top: 5px; font-size: 15px; font-weight: 600;">
+              Annual
+            </p>
+            <p class="h6" style="font-size: 12px; line-height: 16px;">
+              {{ year }}/year
+              <br>2 Free Months
+            </p>
+          </label>
+        </div>
+        
+        {{#if methods}}
+        <div id="methods">
+            <p class="mb-1 mt-1" style="font-size: 14px;">
+              Existing Payment Method
+            </p>
+            {{#each methods}}
+              <button onclick="useSource('{{this.id}}')" style="margin-bottom: 4px; width: 280px; margin-left: auto; margin-right: auto;" class="btn confirmed-blue-btn btn-sm btn-block">Use {{ this.brand }} Ending In -{{ this.last4 }}</button>
+            {{/each}}
+            <p class="mt-3 mb-0" style="font-size: 14px;">
+              New Payment Method
+            </p>
+        </div>
+        {{/if}}
+        
+        <div class="mb-4 pb-1" id="paymentRequestWrap" style="display:none;">
+          <div id="payment-request-button" style="min-width: 280px; max-width: 280px; margin-left: auto;margin-right: auto;">
+            <!-- A Stripe Element will be inserted here. -->
+          </div>
+        </div>
+        
+        <div class="mt-2">
+        
+          <form id="payment-form" >
+            <div class="form-row">
+              <label for="card-element">
+              </label>
+              <div id="card-element" class="form-control" style="min-width: 280px; max-width: 380px; margin-left: auto; margin-right: auto;">
+                <!-- A Stripe Element will be inserted here. -->
+              </div>
+
+              <!-- Used to display Element errors. -->
+              <div id="card-errors" role="alert" style="color: red; font-size: 13px; margin-top: 4px; text-align:center; width: 100%;"></div>
+            </div>
+
+            <button class="btn confirmed-blue-btn mt-2" style="width: 280px; line-height: 18px;">Submit</button>
+          </form>
+        
+        </div>
+        
+      </div>
+      
+    </div>  <!-- row -->
+    
+  </div> <!-- container -->
+  
+  {{#if browser}}
+  {{> footer}}
+  {{/if}}
+
+  {{> bootstrapjs}}
+  
+  <script src="/js/bootbox.min.js"></script>
+  
+  <script>
+
+    var stripe = Stripe('{{STRIPE_PUBLIC_KEY}}');
+    var elements = stripe.elements();
+    
+    function switchToMonthly() {
+    	$('#plan').val("all-monthly");
+      $("#monthlyPlan").addClass("active");
+      $("#annualPlan").removeClass("active");
+    }
+
+    function switchToAnnual() {
+    	$('#plan').val("all-annual");
+      $("#annualPlan").addClass("active");
+      $("#monthlyPlan").removeClass("active");
+    }
+    
+    $(document).ready( function() {
+      
+      // if there's a 3ds query params (client_secret, source, livemode), then set loading and check if 3ds was successful
+      if ("{{ source }}" != "") {
+        $("#pleaseWaitDialog").modal('show'); // wait 5 seconds for card to become chargeable before looking it up
+        setTimeout(function() {
+          stripe.retrieveSource( {
+            id: "{{ source }}",
+            client_secret: "{{ client_secret }}"
+          })
+          .then( function(result) {
+            if (result.error) {
+              bootbox.alert("Error getting the verification performed: " + result.error);
+              setTimeout(function() { $("#pleaseWaitDialog").modal('hide') }, 1000);
+            }
+            else {
+              // check that the source is chargeable
+              if (result.source.status != "chargeable") {
+                setTimeout(function() { $("#pleaseWaitDialog").modal('hide'); }, 1000);
+                bootbox.alert("Your card could not be verified. Please try again later or contact support at team@{{DOMAIN}}.");
+                return;
+              }
+              // 3ds complete, set the source and send it
+              $("#source").val(result.source.id);
+              $("#is3ds").val("true");
+              $("#subscriptionForm").submit();
+            }
+          });
+        }, 3000);
+      }
+      
+      $("#countrySelector").val("{{browserLocale}}");
+      $("#countrySelector").on("change", function (ev) {
+        window.location = updateQueryString("locale", ev.target.value, window.location.href);
+      })
+      
+      if ( "{{plan}}" == "all-monthly" ) {
+        switchToMonthly();
+      }
+      else if ( "{{plan}}" == "all-annual" ) {
+        switchToAnnual();
+      }
+      
+      $("#monthlyPlan").click( function() {
+        switchToMonthly();
+      });
+      
+      $("#annualPlan").click( function() {
+        switchToAnnual();
+      });
+    
+      // Create Stripe Card Element
+      var card = elements.create('card', {
+        style: {
+          base: {
+            color: '#32325d',
+            lineHeight: '18px',
+            fontFamily: '"Montserrat", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+              color: '#aab7c4'
+            }
+          },
+          invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
+          }
+        }
+      });
+      card.mount('#card-element');
+      
+      // Handle real-time validation errors from the card Element.
+      card.addEventListener('change', function(event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+          displayError.textContent = event.error.message;
+        } else {
+          displayError.textContent = '';
+        }
+      });
+
+      // Handle form submission.
+      var form = document.getElementById('payment-form');
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        $("#pleaseWaitDialog").modal('show');
+        stripe.createSource(card).then(function(result) {
+          if (result.error) {
+            // Inform the user if there was an error
+            var errorElement = document.getElementById('card-errors');
+            errorElement.textContent = result.error.message;
+            setTimeout(function() { $("#pleaseWaitDialog").modal('hide') }, 1000);
+          }
+          else {
+            // Send the source to your server
+            stripeSourceHandler(result.source);
+          }
+        });
+      });
+
+      // Submit the form with the source ID.
+      function stripeSourceHandler(source) {
+        if (source.card.three_d_secure == "required") {
+          var confirmString = "This card requires additional verification from your issuer. You'll be redirected to a page where you can perform this verification. Proceed?";
+          if ("{{trial}}" == "true") {
+            confirmString = "A trial is not available for your card type, because it requires special addditional verification. You will be charged for the first billing period immediately, but we offer a 7-day money back guarantee if you're not satisfied. Proceed to verifying your card with your bank?"
+          }
+          bootbox.confirm(confirmString, function(result) {
+            if (result) {
+              var amountToCharge = {{monthDiscounted}};
+              if ($("#plan").val() == "all-annual") {
+                amountToCharge = {{annualDiscounted}}
+              }
+              var redirectUrl = window.location.protocol + "//" + window.location.host + "/new-subscription?";
+              redirectUrl = redirectUrl + "plan=" + $("#plan").val();
+              redirectUrl = redirectUrl + "&browser=" + "{{ browser }}";
+              if ("{{ upgrade }}" != "") {
+                redirectUrl = redirectUrl + "&upgrade=" + "{{ upgrade }}";
+              }
+              if ("{{ paramLocale }}" != "none") {
+                redirectUrl = redirectUrl + "&locale=" + "{{ paramLocale }}";
+              }
+              return stripe.createSource({
+                type: 'three_d_secure',
+                amount: amountToCharge,
+                currency: "{{currency}}" || "usd",
+                three_d_secure: {
+                  card: source.id
+                },
+                redirect: {
+                  return_url: redirectUrl
+                }
+              })
+              .then( function(result) {
+                if (result.error) {
+                  setTimeout(function() { $("#pleaseWaitDialog").modal('hide') }, 1000);
+                  bootbox.alert("Error: " + result.error);
+                  return;
+                }
+                // if already chargeable, then no 3ds redirect necessary - submit the form with source
+                if (result.source.status == "chargeable") {
+                  $("#source").val(result.source.id);
+                  $("#subscriptionForm").submit();
+                }
+                // go to issuer's verification page
+                window.location = result.source.redirect.url;
+              });
+            }
+            else {
+              setTimeout(function() { $("#pleaseWaitDialog").modal('hide') }, 1000);
+            }
+          });
+        }
+        else {
+          // No 3D Secure required, just submit
+          $("#source").val(source.id);
+          $("#subscriptionForm").submit();
+        }
+      }
+
+      // Create Stripe Payment Request Button
+      var paymentRequest = stripe.paymentRequest({
+        country: 'US',
+        currency: "{{currency}}",
+        total: {
+          label: 'Confirmed VPN',
+          amount: 0,
+          pending: true
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      });
+      var prButton = elements.create('paymentRequestButton', {
+        paymentRequest: paymentRequest,
+      });
+
+      paymentRequest.canMakePayment().then(function(result) {
+        if (result) {
+          prButton.mount('#payment-request-button');
+          $("#paymentRequestWrap").css("display", "block");
+        } else {
+          $("#paymentRequestWrap").css("display", "none");
+        }
+      });
+    
+      paymentRequest.on('source', function(ev) {
+        $("#source").val(ev.source.id);
+        $("#subscriptionForm").submit();
+      });
+    
+      paymentRequest.on('cancel', function(ev) {
+        setTimeout(function() { $("#pleaseWaitDialog").modal('hide') }, 1000);
+      });
+      
+    });
+
+    function useSource(id) {
+      $("#pleaseWaitDialog").modal('show');
+      setTimeout( function() {
+        $("#source").val(id);
+        $("#subscriptionForm").submit();
+      }, 1000);
+    }
+    
+    function updateQueryString(key, value, url) {
+      if (!url) url = window.location.href;
+      var re = new RegExp("([?&])" + key + "=.*?(&|#|$)(.*)", "gi"),
+      hash;
+      if (re.test(url)) {
+        if (typeof value !== 'undefined' && value !== null)
+          return url.replace(re, '$1' + key + "=" + value + '$2$3');
+        else {
+          hash = url.split('#');
+          url = hash[0].replace(re, '$1$3').replace(/(&|\?)$/, '');
+          if (typeof hash[1] !== 'undefined' && hash[1] !== null) 
+            url += '#' + hash[1];
+          return url;
+        }
+      }
+      else {
+        if (typeof value !== 'undefined' && value !== null) {
+          var separator = url.indexOf('?') !== -1 ? '&' : '?';
+          hash = url.split('#');
+          url = hash[0] + separator + key + '=' + value;
+          if (typeof hash[1] !== 'undefined' && hash[1] !== null) 
+            url += '#' + hash[1];
+          return url;
+        }
+        else
+          return url;
+      }
+    }
+  </script>
+    
+</body>

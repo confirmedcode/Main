@@ -1,0 +1,41 @@
+{
+  "name": "Node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node NODE_ICU_DATA=node_modules/full-icu index.js",
+    "startLocal": ". ../../setLocalEnv.sh && ENVIRONMENT=LOCAL NODE_ENV=development NODE_ICU_DATA=node_modules/full-icu nodemon index.js",
+    "test": "NODE_ENV=test NODE_ICU_DATA=node_modules/full-icu nyc mocha --recursive --timeout 120000 --exit",
+    "testLocal": ". ../../setLocalEnv.sh && ENVIRONMENT=LOCAL NODE_ENV=test NODE_ICU_DATA=node_modules/full-icu nyc mocha --recursive --timeout 120000 --exit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "connect-flash": "^0.1.1",
+    "connect-redis": "^3.3.3",
+    "csurf": "^1.9.0",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
+    "express-validator": "^5.3.0",
+    "express-winston": "^3.0.0",
+    "full-icu": "^1.2.1",
+    "helmet": "^3.13.0",
+    "i18n": "^0.8.3",
+    "password-rules": "0.0.3",
+    "shared": "file:../../shared",
+    "validator": "^9.1.1",
+    "winston": "^3.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.2.0",
+    "cheerio": "^1.0.0-rc.2",
+    "fs-extra": "^7.0.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "pg": "^7.4.3"
+  }
+}

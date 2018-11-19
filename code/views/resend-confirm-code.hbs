@@ -1,0 +1,30 @@
+{{> header title="Resend Confirmation" }}
+
+<body class="text-center">
+  
+  {{> nav-loggedout }}
+  
+  <div class="container mt-4">
+    <div class="col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
+      
+      <h1 class="h6 text-center mt-5">Resend Confirmation?</h1>
+      
+      {{> flash }}
+      
+      <div class="alert alert-secondary" role="alert" id="message" style="margin-left:auto; margin-right: auto;">Your email hasn't been confirmed. If you didn't receive your confirmation email, please check your spam folder, as sometimes it can get stuck there. Or, you can re-send it below.</div>
+
+      <div class="container-fluid p-3 mt-3 confirmed-bg">
+        <form action="/resend-confirm-code" method="POST">
+          <input type="email" id="email" name="email" class="form-control mb-1 mt-2" placeholder="Email address" required autofocus>
+          <button id="resendConfirmCodeButton" type="submit" class="btn confirmed-blue-btn btn-sm text-white btn-block mt-3">Resend Confirmation</button>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+  
+  {{> footer}}
+
+  {{> bootstrapjs}}
+  
+</body>

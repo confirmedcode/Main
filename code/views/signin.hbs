@@ -1,0 +1,41 @@
+{{> header title="Sign In" }}
+  
+<body class="text-center">
+  
+  {{> nav-loggedout }}
+  
+  <div class="container mt-4">
+    <div class="mt-5 col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
+      
+      {{> flash }}
+      
+      <div class="container-fluid p-3 pb-4 confirmed-panel">
+        <h1 class="h5 text-center mt-3 mb-4">Welcome Back</h1>
+        <form class="form-signin" action="/signin" method="POST">
+          <label for="email" class="sr-only">Email address</label>
+          <input type="email" id="email" name="email" class="form-control mt-0" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom: 0px;" placeholder="Email address" required autofocus>
+          <label for="password" class="sr-only">Password</label>
+          <input type="password" id="password" name="password" style="border-top-left-radius: 0px; border-top-right-radius: 0px;" class="form-control" placeholder="Password" required>
+          {{#if redirecturi}}
+          <input type="hidden" id="redirecturi" name="redirecturi" value="{{redirecturi}}">
+          {{/if}}
+          <button id="signinButton" type="submit" class="btn confirmed-blue-btn btn-sm text-white btn-block mt-2">Sign In</button>
+          <div class="text-center mt-2">
+            <a href="/forgot-password" class="badge text-secondary">Forgot Password</a>
+          </div>
+        </form>
+      </div>
+      
+      <div class="container-fluid p-3 mt-4 text-center confirmed-panel">
+        <p style="font-size: 12px; margin-bottom:4px;" class="text-muted">No account yet?</p>
+        <a href="/signup" class="btn confirmed-blue-btn btn-sm text-white btn-block">Sign Up Free</a>
+      </div>
+      
+    </div>
+  </div>
+  
+  {{> footer}}
+
+  {{> bootstrapjs}}
+  
+</body>
