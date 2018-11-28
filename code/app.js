@@ -114,7 +114,8 @@ app.get("/error-test", (request, response, next) => {
   next(new ConfirmedError(500, 999, "Test alerts", "Details here"));
 });
 
-app.get("/ip", (request, response, next) => {
+// Get IP
+function getIpHandler(request, response, next) {
   var ip = request.ip;
   var ipHeader = request.headers['x-forwarded-for'];
   if ( ipHeader ) {
@@ -126,7 +127,14 @@ app.get("/ip", (request, response, next) => {
   response.status(200).json({
     ip: ip
   });
-});
+}
+
+const subdomain = require('express-subdomain');
+const ipRouter = express.Router();
+ipRouter.get("/ip", getIpHandler);
+app.use(subdomain('ip', ipRouter));
+
+app.get("/ip", getIpHandler);
 
 app.get("/health", (request, response, next) => {
   response.status(200).json({

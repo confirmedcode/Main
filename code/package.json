@@ -19,6 +19,7 @@
     "express": "^4.16.3",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
+    "express-subdomain": "^1.0.5",
     "express-validator": "^5.3.0",
     "express-winston": "^3.0.0",
     "full-icu": "^1.2.1",
