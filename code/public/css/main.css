@@ -579,11 +579,11 @@ blockquote{
   margin:20px auto;
   color: #555555;
   font-style: italic;
-  padding:1.2em 20px 1.2em 50px;
+  padding:1.8em 20px 1.4em 50px;
   border-left:5px solid #3498db ;
   line-height:1.4;
   position: relative;
-  background:#EFEFEF;
+  background:#F3F3F3;
 }
 
 blockquote::before{
