@@ -1,3 +1,36 @@
+/* FONTS */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/montserrat-bold-webfont.woff2') format('woff2'),
+         url('/fonts/montserrat-bold-webfont.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/montserrat-bolditalic-webfont.woff2') format('woff2'),
+         url('/fonts/montserrat-bolditalic-webfont.woff') format('woff');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/montserrat-regular-webfont.woff2') format('woff2'),
+         url('/fonts/montserrat-regular-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/montserrat-italic-webfont.woff2') format('woff2'),
+         url('/fonts/montserrat-italic-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+}
+
 .font-friendly * {
   font-family: 'Montserrat', sans-serif;
 }*,
@@ -539,4 +572,47 @@ img {
   .computerphone-iphone {
     right: initial;
   }
+}
+
+blockquote{
+  font-size: 1.1em;
+  margin:20px auto;
+  color: #555555;
+  font-style: italic;
+  padding:1.2em 20px 1.2em 50px;
+  border-left:5px solid #3498db ;
+  line-height:1.4;
+  position: relative;
+  background:#EFEFEF;
+}
+
+blockquote::before{
+  font-family:Arial;
+  content: "\201C";
+  color:#3498db;
+  font-size:4em;
+  position: absolute;
+  left: 7px;
+  top:-10px;
+}
+
+blockquote::after{
+  content: '';
+}
+
+blockquote span{
+  font-style: normal;
+  display:block;
+  color:#333333;
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-top:0.5em;
+}
+
+#cardTable td {
+  padding: 10px;
+}
+
+#cardTable tr {
+  border-bottom: 1px solid rgba(52,152,219, 0.4);
 }

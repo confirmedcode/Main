@@ -102,6 +102,10 @@ app.get("/", (request, response, next) => {
   });
 });
 
+app.get("/openly-operated", (request, response, next) => {
+  return response.render("openly-operated");
+});
+
 app.get("/privacy", (request, response, next) => {
   response.redirect("/privacy.html");
 });
