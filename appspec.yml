@@ -26,6 +26,9 @@ hooks:
       timeout: 300
       runas: node
   AfterInstall:
+    - location: scripts/update-node.sh
+      timeout: 300
+      runas: root
     - location: scripts/npm-install.sh
       timeout: 300
       runas: node
