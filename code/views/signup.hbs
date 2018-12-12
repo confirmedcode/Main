@@ -22,12 +22,27 @@
           <input type="hidden" id="browser" name="browser" value="true">
           <p style="font-size: 11px; margin-bottom: 4px;">Email</p>
           <label for="email" class="sr-only">Email Address</label>
-          <input type="email" id="email" class="form-control mb-2" name="email" placeholder="Email Address" required autofocus>
+          <div id="email_info" style="display:none;">
+            <ul style="margin-bottom: 5px; padding-left: 20px;">
+              <li class="invalid" id="emailPlus" style="display:none;">- Must not contain + symbol</li>
+            </ul>
+          </div>
+          <input type="email" oninput="checkEmailRules()" id="email" class="form-control mb-2" name="email" placeholder="Email Address" required autofocus>
           <p style="font-size: 11px; margin-bottom: 4px;">Password</p>
           <label for="password" class="sr-only">Password</label>
-          <input type="password" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom: 0px;" id="password" class="form-control" name="password" placeholder="Password" required>
+          <div id="pswd_info" style="display:none;">
+            <ul style="margin-bottom: 5px; padding-left: 20px;">
+              <li class="invalid" id="lowercase" style="display:none;">- Must contain lowercase letter</li>
+              <li class="invalid" id="uppercase" style="display:none;">- Must contain uppercase letter</li>
+              <li class="invalid" id="numbers" style="display:none;">- Must contain a number</li>
+              <li class="invalid" id="specialchars" style="display:none;">- Must contain a special character</li>
+              <li class="invalid" id="length" style="display:none;">- Must be at least 8 character</li>
+              <li class="invalid" id="passmatch" style="display:none;">- Password must match</li>
+            </ul>
+          </div>
+          <input type="password" oninput="checkPasswordRules()" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom: 0px;" id="password" class="form-control" name="password" placeholder="Password" required>
           <label for="verifyPassword" class="sr-only">Confirm Password</label>
-          <input type="password" id="verifyPassword" style="border-top-left-radius: 0px; border-top-right-radius: 0px; margin-bottom: 8px;" class="form-control" placeholder="Verify Password" required>
+          <input type="password" oninput="checkPasswordRules()" id="verifyPassword" style="border-top-left-radius: 0px; border-top-right-radius: 0px; margin-bottom: 8px;" class="form-control" placeholder="Verify Password" required>
           <p style="font-size: 11px; margin-bottom: 4px;">Referral Code</p>
           {{#if refer}}
             <input type="text" id="refer" readonly="readonly" class="form-control mb-2" name="refer" placeholder="" value="{{refer}}">
@@ -48,6 +63,75 @@
   </div>
   
   <script>
+    
+    function checkEmailRules() {
+      
+      document.getElementById("emailPlus").style.display = "none";
+      
+      var v = document.getElementById("email").value;
+      
+      if (/[+]/g.test(v) == true) {
+        document.getElementById("emailPlus").style.display = "block";
+        document.getElementById("email_info").style.display = "block";
+      }
+      else {
+        document.getElementById("emailPlus").style.display = "none";
+        document.getElementById("email_info").style.display = "none";
+      }
+
+    }
+    
+    function checkPasswordRules() {
+
+      document.getElementById("lowercase").style.display = "none";
+      document.getElementById("uppercase").style.display = "none";
+      document.getElementById("numbers").style.display = "none";
+      document.getElementById("specialchars").style.display = "none";
+      document.getElementById("length").style.display = "none";
+      document.getElementById("passmatch").style.display = "none";
+      
+      var v = document.getElementById("password").value;
+      var v2 = document.getElementById("verifyPassword").value;
+      
+      if (v == null || v == "" || v.length == 0) {
+        return;
+      }
+      
+      var violated = false;
+      
+      if (/[a-z]/g.test(v) != true) {
+        document.getElementById("lowercase").style.display = "block";
+        violated = true;
+      }
+      if (/[A-Z]/g.test(v) != true) {
+        document.getElementById("uppercase").style.display = "block";
+        violated = true;
+      }
+      if (/\d/.test(v) != true) {
+        document.getElementById("numbers").style.display = "block";
+        violated = true;
+      }
+      if (/[~`!@#$%^&*()\-_+=[\]{}\\|;:'",<.>/?]/g.test(v) != true) {
+        document.getElementById("specialchars").style.display = "block";
+        violated = true;
+      }
+      if (v.length < 8) {
+        document.getElementById("length").style.display = "block";
+        violated = true;
+      }
+      if (v != v2) {
+        document.getElementById("passmatch").style.display = "block";
+        violated = true;
+      }
+      
+      if (violated == true) {
+        document.getElementById("pswd_info").style.display = "block";
+      }
+      else {
+        document.getElementById("pswd_info").style.display = "none";
+      }
+    }
+    
     function validatePasswordMatch() {
       if (document.getElementById("password").value != document.getElementById("verifyPassword").value) {
         bootbox.alert("Passwords must match.");
