@@ -114,8 +114,8 @@ app.get(["/terms", "/terms.html"], (request, response, next) => {
   return response.render("terms");
 });
 
-app.get("/team", (request, response, next) => {
-  return response.render("team");
+app.get("/about-us", (request, response, next) => {
+  return response.render("about-us");
 });
 
 app.get("/error-test", (request, response, next) => {
