@@ -1,6 +1,10 @@
 {{> header title="New Subscription" }}
 
+{{#if browser}}
 <body>
+{{else}}
+<body style="padding-top: 0px;">
+{{/if}}
   
   {{#if browser}}
   {{> nav }}

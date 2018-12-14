@@ -106,12 +106,16 @@ app.get("/openly-operated", (request, response, next) => {
   return response.render("openly-operated");
 });
 
-app.get("/privacy", (request, response, next) => {
-  response.redirect("/privacy.html");
+app.get(["/privacy", "/privacy.html"], (request, response, next) => {
+  return response.render("privacy");
 });
 
-app.get("/terms", (request, response, next) => {
-  response.redirect("/terms.html");
+app.get(["/terms", "/terms.html"], (request, response, next) => {
+  return response.render("terms");
+});
+
+app.get("/team", (request, response, next) => {
+  return response.render("team");
 });
 
 app.get("/error-test", (request, response, next) => {

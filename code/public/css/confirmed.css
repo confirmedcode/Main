@@ -50,6 +50,8 @@ body {
   font-family: "Montserrat", Roboto, "Open Sans", "Segoe UI", sans-serif;
   margin-bottom: 44px;
   background-color: rgba(250,250,250,1);
+  -webkit-font-smoothing: antialiased;
+  padding-top: 67px;
 }
 
 .footer {
@@ -70,6 +72,17 @@ body {
 
 .confirmed-blue-border {
   border-color: #3498db !important;
+}
+
+.confirmed-blue-btn-lg {
+  
+  background-color: #3498db !important;
+  color: white !important;
+  font-weight: 400;
+  padding: 10px 20px;
+  line-height: 30px;
+  font-size: 1.1rem !important;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .confirmed-blue-btn {
@@ -177,4 +190,55 @@ body {
 #email_info .invalid {
   font-size: 10px;
   color: red;
+}
+
+/* Home Page */
+
+.regions {text-align: center;}
+
+.regions .region {width: 110px; display: inline-block; margin: 0 5px; height: 50px; font-weight: 700; color: #ccc;}
+
+blockquote{
+  font-size: 1.1em;
+  margin:20px auto;
+  color: #555555;
+  font-style: italic;
+  padding:1.8em 20px 1.4em 50px;
+  border-left:5px solid #3498db ;
+  line-height:1.4;
+  position: relative;
+  background:#F3F3F3;
+}
+
+blockquote::before{
+  font-family:Arial;
+  content: "\201C";
+  color:#3498db;
+  font-size:4em;
+  position: absolute;
+  left: 7px;
+  top:-10px;
+}
+
+blockquote::after{
+  content: '';
+}
+
+blockquote span{
+  font-style: normal;
+  display:block;
+  color:#333333;
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-top:0.5em;
+}
+
+/* Openly Operated Page */
+
+.cardTable td {
+  padding: 10px;
+}
+
+.cardTable tr {
+  border-bottom: 1px solid rgba(52,152,219, 0.4);
 }

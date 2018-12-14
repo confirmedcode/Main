@@ -22,14 +22,17 @@
           <input type="hidden" id="browser" name="browser" value="true">
           <p style="font-size: 11px; margin-bottom: 4px;">Email</p>
           <label for="email" class="sr-only">Email Address</label>
+          <input type="email" oninput="checkEmailRules()" id="email" class="form-control mb-2" name="email" placeholder="Email Address" required autofocus>
           <div id="email_info" style="display:none;">
             <ul style="margin-bottom: 5px; padding-left: 20px;">
               <li class="invalid" id="emailPlus" style="display:none;">- Must not contain + symbol</li>
             </ul>
           </div>
-          <input type="email" oninput="checkEmailRules()" id="email" class="form-control mb-2" name="email" placeholder="Email Address" required autofocus>
           <p style="font-size: 11px; margin-bottom: 4px;">Password</p>
           <label for="password" class="sr-only">Password</label>
+          <input type="password" oninput="checkPasswordRules()" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom: 0px;" id="password" class="form-control" name="password" placeholder="Password" required>
+          <label for="verifyPassword" class="sr-only">Confirm Password</label>
+          <input type="password" oninput="checkPasswordRules()" id="verifyPassword" style="border-top-left-radius: 0px; border-top-right-radius: 0px; margin-bottom: 8px;" class="form-control" placeholder="Verify Password" required>
           <div id="pswd_info" style="display:none;">
             <ul style="margin-bottom: 5px; padding-left: 20px;">
               <li class="invalid" id="lowercase" style="display:none;">- Must contain lowercase letter</li>
@@ -40,9 +43,6 @@
               <li class="invalid" id="passmatch" style="display:none;">- Password must match</li>
             </ul>
           </div>
-          <input type="password" oninput="checkPasswordRules()" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom: 0px;" id="password" class="form-control" name="password" placeholder="Password" required>
-          <label for="verifyPassword" class="sr-only">Confirm Password</label>
-          <input type="password" oninput="checkPasswordRules()" id="verifyPassword" style="border-top-left-radius: 0px; border-top-right-radius: 0px; margin-bottom: 8px;" class="form-control" placeholder="Verify Password" required>
           <p style="font-size: 11px; margin-bottom: 4px;">Referral Code</p>
           {{#if refer}}
             <input type="text" id="refer" readonly="readonly" class="form-control mb-2" name="refer" placeholder="" value="{{refer}}">
