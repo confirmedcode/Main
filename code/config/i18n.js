@@ -92,7 +92,7 @@ i18n.configure({
     "en-us"
   ],
   queryParameter: "locale",
-  updateFiles: false
+  directory: "./locales"
 });
 
 module.exports = i18n;
