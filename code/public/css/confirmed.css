@@ -196,7 +196,7 @@ body {
 
 .regions {text-align: center;}
 
-.regions .region {width: 110px; display: inline-block; margin: 0 5px; height: 50px; font-weight: 700; color: #ccc;}
+.regions .region {width: 110px; display: inline-block; margin: 0 5px; height: 40px; font-weight: 700; color: #ccc;}
 
 blockquote{
   font-size: 1.1em;
