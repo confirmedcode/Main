@@ -91,7 +91,8 @@ i18n.configure({
     "en-gb",
     "en-us"
   ],
-  queryParameter: "locale"
+  queryParameter: "locale",
+  updateFiles: false
 });
 
 module.exports = i18n;
