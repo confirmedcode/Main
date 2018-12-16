@@ -9,6 +9,9 @@ const { BruteForce } = require("shared/redis");
 // Models
 const { User } = require("shared/models");
 
+// Utilities
+const Url = require('url');
+
 // Routes
 const router = require("express").Router();
 
@@ -73,7 +76,11 @@ router.post("/signin",
   if (request.values.email) {
     const email = request.values.email;
     const password = request.values.password;
-    const redirecturi = request.values.redirecturi || "/account";
+    
+    // make a safe redirect by only using the path component of the url
+    var redirecturi = request.values.redirecturi || "/account";
+    redirecturi = Url.parse(redirecturi).path;
+    
     return User.getWithEmailAndPassword(email, password)
       .then( user => {
         if (user.emailConfirmed === true) {

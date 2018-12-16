@@ -119,13 +119,14 @@ module.exports = {
       });
   },
   
-  signinWithEmail: (email = Constants.EXISTING_USER_EMAIL, password = Constants.EXISTING_USER_PASSWORD, browser = false) => {
+  signinWithEmail: (email = Constants.EXISTING_USER_EMAIL, password = Constants.EXISTING_USER_PASSWORD, browser = false, redirecturi) => {
     return agent
       .post("/signin")
       .set("Accept", getContentType(browser))
       .send({
         email: email,
-        password: password
+        password: password,
+        redirecturi: redirecturi
       });
   },
   

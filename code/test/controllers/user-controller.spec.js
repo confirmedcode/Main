@@ -261,6 +261,8 @@ describe("User Controller", () => {
               return Client.confirmEmail(Constants.NEW_USER_EMAIL, user.emailConfirmCode, true);
             })
             .then(response => {
+              response.should.redirect;
+              response.redirects[0].should.contain("/signin?redirecturi=/new-subscription?browser=true");
               response.should.have.status(200);
               response.text.should.contain("Email confirmed. Please sign in.");
               return User.getWithEmail(Constants.NEW_USER_EMAIL);

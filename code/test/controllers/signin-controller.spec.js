@@ -108,6 +108,34 @@ describe("Signin Controller", () => {
         });
       });
       
+      describe("Signin With A Redirect To Current Domain", () => {
+        it("should redirect correctly", (done) => {
+          Client.signinWithEmail(Constants.EXISTING_USER_EMAIL, Constants.EXISTING_USER_PASSWORD, true, "/new-subscription?browser=true")
+            .then(response => {
+              response.should.redirect;
+              response.redirects[0].should.contain("/new-subscription?browser=true");
+              done();
+            })
+            .catch(error => {
+              done(error);
+            });
+        });
+      });
+      
+      describe("Signin With A Redirect To External Domain", () => {
+        it("should redirect to current domain instead of external domain", (done) => {
+          Client.signinWithEmail(Constants.EXISTING_USER_EMAIL, Constants.EXISTING_USER_PASSWORD, true, "https://test.com/should-not-include-original-domain")
+            .then(response => {
+              response.should.redirect;
+              response.redirects[0].should.not.contain("test.com");
+              done();
+            })
+            .catch(error => {
+              done(error);
+            });
+        });
+      });
+      
     });
     
     describe("Failure", () => {
