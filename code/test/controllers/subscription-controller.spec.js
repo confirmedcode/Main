@@ -262,6 +262,7 @@ describe("Subscription Controller", () => {
               });
             })
             .then(response => {
+              response.text.should.contain("js.stripe.com");
               response.text.should.contain("Sign Out");
               response.text.should.contain("Download");
               done();

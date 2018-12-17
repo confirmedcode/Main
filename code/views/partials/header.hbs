@@ -2,6 +2,11 @@
   <title>{{title}}</title>
   
 	<meta charset="utf-8">
+
+  {{#if secureurl}}
+  <meta name="referrer" content="no-referrer">
+  <meta name="referrer" content="never">
+  {{/if}}
   
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Confirmed is the world's only Openly Operated VPN that protects your data against against hackers, snoopers, and even your ISP.">
@@ -22,7 +27,11 @@
   <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="/css/device-mockups.min.css">
 
-  <!-- load Stripe library on every page for improved fraud detection -->
+  <!-- Load Stripe library on every page for improved fraud detection -->
+  {{#if secureurl}}
+  <!-- Don't load Stripe to be extra safe on secureurl (reset-password) -->
+  {{else}}
   <script src="https://js.stripe.com/v3/"></script>
+  {{/if}}
   
 </head>

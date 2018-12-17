@@ -82,6 +82,9 @@ describe("Reset Password Controller", () => {
             });
           })
           .then(response => {
+            // reset-password should not leak referral url due to sensitive query parmaeter
+            response.text.should.not.contain("stripe.com");
+            response.text.should.contain("no-referrer");
             response.text.should.contain("Reset Password");
             done();
           })
