@@ -9,8 +9,8 @@ const { BruteForce } = require("shared/redis");
 // Models
 const { User } = require("shared/models");
 
-// Utilities
-const Url = require('url');
+// Constants
+const VALID_REDIRECT_URIS = ["/new-subscription?browser=true", "/payment-methods"];
 
 // Routes
 const router = require("express").Router();
@@ -28,7 +28,11 @@ router.get("/signin",
   validateCheck
 ],
 (request, response, next) => {
-  const redirecturi = request.values.redirecturi;
+  var redirecturi = request.values.redirecturi || "/account";
+  if (VALID_REDIRECT_URIS.indexOf(redirecturi) == -1) {
+    redirecturi = "/account"
+  }
+  
   // redirect to account if there's a valid session
   if (request.session && request.session.userId && request.session.userId != "") {
     if (redirecturi) {
@@ -76,10 +80,12 @@ router.post("/signin",
   if (request.values.email) {
     const email = request.values.email;
     const password = request.values.password;
-    
-    // make a safe redirect by only using the path component of the url
+
+    // whitelist the uris that are valid redirects
     var redirecturi = request.values.redirecturi || "/account";
-    redirecturi = Url.parse(redirecturi).path;
+    if (VALID_REDIRECT_URIS.indexOf(redirecturi) == -1) {
+      redirecturi = "/account"
+    }
     
     return User.getWithEmailAndPassword(email, password)
       .then( user => {

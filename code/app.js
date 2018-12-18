@@ -102,6 +102,24 @@ app.get("/", (request, response, next) => {
   });
 });
 
+app.get("/about-us", (request, response, next) => {
+  return response.render("about-us");
+});
+
+app.get("/why-vpn", (request, response, next) => {
+  var ip = request.ip;
+  var ipHeader = request.headers['x-forwarded-for'];
+  if ( ipHeader ) {
+    var ipHeaderSplit = ipHeader.split(",");
+    if (ipHeaderSplit.length > 0 ) {
+      ip = ipHeaderSplit[0];
+    }
+  }
+  return response.render("why-vpn", {
+    ip: ip
+  });
+});
+
 app.get("/openly-operated", (request, response, next) => {
   return response.render("openly-operated");
 });
@@ -112,10 +130,6 @@ app.get(["/privacy", "/privacy.html"], (request, response, next) => {
 
 app.get(["/terms", "/terms.html"], (request, response, next) => {
   return response.render("terms");
-});
-
-app.get("/about-us", (request, response, next) => {
-  return response.render("about-us");
 });
 
 app.get("/error-test", (request, response, next) => {
@@ -182,7 +196,7 @@ app.use((error, request, response, next) => {
           request.flashRedirect("error", error.message, request.originalUrl);
         }
         else {
-          request.flashRedirect("error", error.message, "/signin?redirecturi=" + encodeURI(request.originalUrl));
+          request.flashRedirect("error", error.message, "/signin");
         }
       }
       else if (error.statusCode >= 200 && error.statusCode < 500) {

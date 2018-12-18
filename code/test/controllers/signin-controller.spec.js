@@ -136,6 +136,20 @@ describe("Signin Controller", () => {
         });
       });
       
+      describe("Signin With A Redirect To External Domain 2", () => {
+        it("should redirect to current domain instead of external domain", (done) => {
+          Client.signinWithEmail(Constants.EXISTING_USER_EMAIL, Constants.EXISTING_USER_PASSWORD, true, "///test.com/should-not-include-original-domain")
+            .then(response => {
+              response.should.redirect;
+              response.redirects[0].should.not.contain("test.com");
+              done();
+            })
+            .catch(error => {
+              done(error);
+            });
+        });
+      });
+      
     });
     
     describe("Failure", () => {
