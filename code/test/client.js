@@ -139,12 +139,13 @@ module.exports = {
       });
   },
   
-  signinWithReceipt: (authtype, authreceipt) => {
+  signinWithReceipt: (authtype, authreceipt, partner = null) => {
     return agent
       .post("/signin")
       .send({
         authtype: authtype,
-        authreceipt: authreceipt
+        authreceipt: authreceipt,
+        partner: partner
       });
   },
   

@@ -104,6 +104,7 @@ Name | Type | Description
 --- | --- | ---
 `authtype` | `string` | __Required__ Must be either `ios` or `android`.
 `authreceipt` | `string` | __Required__ Base64 encoded IAP receipt.
+`partner` | `string` | Partner campaign for affiliate referrals. Format is `[Partner Code]-[Campaign ID]`, e.g, `acme-1`. Partner code and campaign ID should both be lowercase. If no campaign ID is provided, campaign will show up as (no campaign).
 
 __Response__
 
@@ -923,7 +924,7 @@ Status Code | Error Code | Message
 ## Feedback
 If you have any questions, concerns, or other feedback, please let us know any feedback in Github issues or by e-mail.
 
-We also have a bug bounty program that can be found here: https://hackerone.com/confirmed_inc
+We also have a bug bounty program -- please email <engineering@confirmedvpn.com> for details.
 
 ## License
 

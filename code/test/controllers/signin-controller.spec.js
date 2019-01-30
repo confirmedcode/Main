@@ -1,6 +1,7 @@
 const should = require("chai").should();
 const Client = require("../client.js");
 const Constants = require('../constants.js');
+const { User } = require("shared/models");
 const { reset } = require("../utilities.js");
 
 describe("Signin Controller", () => {
@@ -61,6 +62,48 @@ describe("Signin Controller", () => {
               response.should.have.status(200);
               response.body.message.should.equal("Signed In");
               response.body.code.should.equal(0);
+              return User.getWithId(Constants.NEW_USER_ID);
+            })
+            .then(user => {
+              Constants.NEW_USER_PARTNER_CAMPAIGN_1.should.not.equal(user.partnerCampaign);
+              done();
+            })
+            .catch(error => {
+              done(error);
+            });
+        });
+      });
+      
+      describe("Signin With iOS Receipt and Partner Campaign 1", () => {
+        it("should succeed", (done) => {
+          Client.signinWithReceipt("ios", Constants.IOS_RECEIPT_VALID, Constants.NEW_USER_PARTNER_CAMPAIGN_1)
+            .then(response => {
+              response.should.have.status(200);
+              response.body.message.should.equal("Signed In");
+              response.body.code.should.equal(0);
+              return User.getWithId(Constants.NEW_USER_ID);
+            })
+            .then(user => {
+              user.partnerCampaign.should.equal(Constants.NEW_USER_PARTNER_CAMPAIGN_1);
+              done();
+            })
+            .catch(error => {
+              done(error);
+            });
+        });
+      });
+      
+      describe("Signin With iOS Receipt and Partner Code With No Campaign", () => {
+        it("should succeed", (done) => {
+          Client.signinWithReceipt("ios", Constants.IOS_RECEIPT_VALID, Constants.NEW_USER_PARTNER_NO_CAMPAIGN)
+            .then(response => {
+              response.should.have.status(200);
+              response.body.message.should.equal("Signed In");
+              response.body.code.should.equal(0);
+              return User.getWithId(Constants.NEW_USER_ID);
+            })
+            .then(user => {
+              user.partnerCampaign.should.equal(Constants.NEW_USER_PARTNER_NO_CAMPAIGN + "-");
               done();
             })
             .catch(error => {

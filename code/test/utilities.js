@@ -103,6 +103,7 @@ module.exports = {
       "helper_pw",
       "renewer_pw",
       "support_pw",
+      "partner_pw",
       "webhook_pw",
       "debug_pw"
     )
@@ -115,13 +116,13 @@ module.exports = {
           AND pid <> pg_backend_pid();
         -- Drop tables, roles
         DROP SCHEMA public CASCADE;
-        DROP ROLE IF EXISTS main, helper, renewer, support, webhook, debug;
+        DROP ROLE IF EXISTS main, helper, renewer, support, partner, webhook, debug;
         CREATE SCHEMA public;
         GRANT ALL ON SCHEMA public TO master;
         -- Create tables
         ${schema}
         -- Allow users to access tables
-        GRANT USAGE ON SCHEMA public TO main, helper, renewer, support, webhook, debug;`;
+        GRANT USAGE ON SCHEMA public TO main, helper, renewer, support, partner, webhook, debug;`;
       return Database.query(schema);
     })
   },

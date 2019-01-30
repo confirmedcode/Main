@@ -70,13 +70,15 @@ router.post("/signin",
           .exists().withMessage("Missing receipt data.")
           .not().isEmpty().withMessage("Missing receipt data.")
           .stripLow()
-          .isBase64().withMessage("Invalid receipt data.")
+          .isBase64().withMessage("Invalid receipt data."),
+        check("partner"),
       ]
     ]
   ),
   validateCheck
 ],
 (request, response, next) => {
+  
   if (request.values.email) {
     const email = request.values.email;
     const password = request.values.password;
@@ -122,7 +124,14 @@ router.post("/signin",
   else {
     const receiptData = request.values.authreceipt;
     const receiptType = request.values.authtype;
-    return User.getWithIAPReceipt(receiptData, receiptType)
+    var partner = request.values.partner;
+    if (partner) {
+      if (!partner.includes("-")) {
+        partner = partner + "-";
+      }
+    }
+    //? request.values.partner.toLowerCase() : null;
+    return User.getWithIAPReceipt(receiptData, receiptType, partner)
       .then(user => {
         request.session.regenerate(error => {
           if (error) {
