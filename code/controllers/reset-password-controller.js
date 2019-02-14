@@ -2,7 +2,7 @@ const ConfirmedError = require("shared/error");
 const Logger = require("shared/logger");
 
 // Middleware
-const { body, query } = require("express-validator/check");
+const { body, query, check } = require("express-validator/check");
 const validateCheck = require("../middleware/validate-check.js");
 const passwordRules = require("../middleware/password-rules.js");
 const { BruteForce } = require("shared/redis");
@@ -69,7 +69,7 @@ router.get("/reset-password",
 router.post("/reset-password",
 [
   BruteForce(20).prevent,
-  body("code")
+  check("code")
     .exists().withMessage("Missing reset code.")
     .not().isEmpty().withMessage("Missing reset code.")
     .isLength({ min: 32, max: 32 }).withMessage("Invalid reset code.")
