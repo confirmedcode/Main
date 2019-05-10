@@ -25,7 +25,7 @@ const router = require("express").Router();
  *********************************************/
 
 router.post("/subscriptions",
-BruteForce(300).prevent,
+BruteForce(300),
 authenticate.checkAndSetUser,
 (request, response, next) => {
   request.user.getSubscriptions(true)
@@ -42,7 +42,7 @@ authenticate.checkAndSetUser,
  *********************************************/
 
 router.post("/active-subscriptions",
-BruteForce(300).prevent,
+BruteForce(300),
 authenticate.checkAndSetUser,
 (request, response, next) => {
   request.user.getActiveSubscriptions(true)
@@ -60,7 +60,7 @@ authenticate.checkAndSetUser,
 
 router.get("/new-subscription",
 [
-  BruteForce(100).prevent,
+  BruteForce(100),
   authenticate.checkAndSetUser,
   query("source"), // for 3d secure
   query("client_secret"), // for 3d secure
@@ -147,7 +147,7 @@ router.get("/new-subscription",
 
 router.post("/new-subscription", 
 [
-  BruteForce(50).prevent,
+  BruteForce(50),
   authenticate.checkAndSetUser,
   body("source")
     .exists().withMessage("Missing source.")
@@ -225,7 +225,7 @@ router.post("/new-subscription",
 
 router.post("/subscription-event", 
 [
-  BruteForce(100).prevent,
+  BruteForce(100),
   authenticate.checkAndSetUser,
   body("authtype")
     .isIn(["ios", "android"]).withMessage("Invalid IAP receipt type (must be ios/android)"),
@@ -259,7 +259,7 @@ router.post("/subscription-event",
 
 router.get("/cancel-subscription",
 [
-  BruteForce(50).prevent,
+  BruteForce(50),
   authenticate.check,
   query("receiptId")
     .exists().withMessage("Missing receipt ID.")

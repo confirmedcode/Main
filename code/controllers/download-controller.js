@@ -12,7 +12,7 @@ const SPEED_TEST_BUCKET = process.env.SPEED_TEST_BUCKET;
 const router = require("express").Router();
 
 router.get("/download-mac-app",
-BruteForce(100).prevent,
+BruteForce(100),
 (request, response, next) => {	
   return ClientFile.getUrl("mac-app")
   .then(url => {
@@ -22,7 +22,7 @@ BruteForce(100).prevent,
 });
 
 router.get("/download-mac-update",
-BruteForce(800).prevent,
+BruteForce(800),
 (request, response, next) => {	
   return ClientFile.getUrl("mac-update")
   .then(url => {
@@ -32,7 +32,7 @@ BruteForce(800).prevent,
 });
 
 router.get("/download-windows-app",
-BruteForce(100).prevent,
+BruteForce(100),
 (request, response, next) => {	
   return ClientFile.getUrl("windows-app")
   .then(url => {
@@ -42,7 +42,7 @@ BruteForce(100).prevent,
 });
 
 router.get("/download-windows-update",
-BruteForce(800).prevent,
+BruteForce(800),
 (request, response, next) => {	
   return ClientFile.getUrl("windows-update")
   .then(url => {

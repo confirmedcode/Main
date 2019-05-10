@@ -49,7 +49,7 @@ router.get("/signin",
 
 router.post("/signin",
 [ 
-  BruteForce(250).prevent,
+  BruteForce(250),
   oneOf(
     [
       [
@@ -160,7 +160,7 @@ router.post("/signin",
  *********************************************/
 
 router.get("/logout",
-BruteForce(20).prevent,
+BruteForce(20),
 (request, response, next) => {
   if (request.session) {
     request.session.destroy(error => {

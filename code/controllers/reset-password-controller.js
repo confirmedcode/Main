@@ -26,7 +26,7 @@ router.get("/forgot-password",
   
 router.post("/forgot-password",
 [
-  BruteForce(20).prevent,
+  BruteForce(20),
   body("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
@@ -50,7 +50,7 @@ router.post("/forgot-password",
 
 router.get("/reset-password",
 [
-  BruteForce(20).prevent,
+  BruteForce(20),
   query("code")
     .exists().withMessage("Missing reset code.")
     .not().isEmpty().withMessage("Missing reset code.")
@@ -68,7 +68,7 @@ router.get("/reset-password",
 
 router.post("/reset-password",
 [
-  BruteForce(20).prevent,
+  BruteForce(20),
   check("code")
     .exists().withMessage("Missing reset code.")
     .not().isEmpty().withMessage("Missing reset code.")

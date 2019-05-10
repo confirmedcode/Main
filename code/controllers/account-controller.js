@@ -27,7 +27,7 @@ const router = require("express").Router();
 
 router.get("/account",
 [
-  BruteForce(1000).prevent,
+  BruteForce(1000),
   authenticate.checkAndSetUser
 ],
 (request, response, next) => {	
@@ -71,7 +71,7 @@ csrfProtection,
 
 router.post("/change-email",
 [
-  BruteForce(25).prevent,
+  BruteForce(25),
   authenticate.checkAndSetUser,
   csrfProtection,
   body("newEmail")
@@ -103,7 +103,7 @@ router.post("/change-email",
 
 router.get(["/confirm-change-email"],
 [
-  BruteForce(50).prevent,
+  BruteForce(50),
   query("email")
     .exists().withMessage("Missing email.")
     .not().isEmpty().withMessage("Missing email.")
@@ -142,7 +142,7 @@ csrfProtection,
 
 router.post("/change-password",
 [
-  BruteForce(20).prevent,
+  BruteForce(20),
   authenticate.checkAndSetUser,
   csrfProtection,
   body("currentPassword")
@@ -178,7 +178,7 @@ router.post("/change-password",
 
 router.get("/invoices",
 [
-  BruteForce(200).prevent,
+  BruteForce(200),
   authenticate.checkAndSetUser
 ],
 (request, response, next) => {
@@ -208,7 +208,7 @@ router.get("/invoices",
 
 router.get("/payment-methods",
 [
-  BruteForce(200).prevent,
+  BruteForce(200),
   authenticate.checkAndSetUser
 ],
 (request, response, next) => {
@@ -239,7 +239,7 @@ authenticate.check,
 
 router.post("/add-new-card",
 [
-  BruteForce(20).prevent,
+  BruteForce(20),
   authenticate.checkAndSetUser,
   body("source")
     .exists().withMessage("Missing source.")
@@ -274,7 +274,7 @@ router.post("/add-new-card",
 
 router.post("/set-default-card",
 [
-  BruteForce(50).prevent,
+  BruteForce(50),
   authenticate.checkAndSetUser,
   body("cardId")
     .exists().withMessage("Missing card ID.")
@@ -302,7 +302,7 @@ router.post("/set-default-card",
 
 router.post("/delete-card",
 [
-  BruteForce(20).prevent,
+  BruteForce(20),
   authenticate.checkAndSetUser,
   body("cardId")
     .exists().withMessage("Missing card ID.")

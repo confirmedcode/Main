@@ -62,7 +62,7 @@ router.get("/signup-success",
 
 router.post("/signup",
 [
-  BruteForce(50).prevent,
+  BruteForce(50),
   body("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
@@ -119,7 +119,7 @@ router.post("/signup",
 
 router.get(["/confirm-email"],
 [
-  BruteForce(50).prevent,
+  BruteForce(50),
   query("email")
     .exists().withMessage("Missing email.")
     .not().isEmpty().withMessage("Missing email.")
@@ -162,7 +162,7 @@ router.get("/resend-confirm-code",
 
 router.post("/resend-confirm-code",
 [
-  BruteForce(20).prevent,
+  BruteForce(20),
   body("email")
   .exists().withMessage("Missing email address.")
   .isEmail().withMessage("Invalid email address.")
@@ -186,7 +186,7 @@ router.post("/resend-confirm-code",
 
 router.post("/convert-shadow-user",
 [
-  BruteForce(30).prevent,
+  BruteForce(30),
   authenticate.checkAndSetUser,
   body("newemail")
     .exists().withMessage("Missing email address.")
@@ -236,7 +236,7 @@ router.get("/clients",
 
 router.post("/get-key",
 [
-  BruteForce(200).prevent,
+  BruteForce(200),
   authenticate.checkAndSetUser,
   check("platform")
     .isIn(VALID_PLATFORMS).withMessage("Unrecognized platform."),
@@ -259,7 +259,7 @@ router.post("/get-key",
 
 router.get("/do-not-email",
 [
-  BruteForce(200).prevent,
+  BruteForce(200),
   check("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
@@ -279,7 +279,7 @@ router.get("/do-not-email",
   
 router.post("/do-not-email",
 [
-  BruteForce(20).prevent,
+  BruteForce(20),
   body("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
