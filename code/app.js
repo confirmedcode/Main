@@ -132,6 +132,14 @@ app.get(["/terms", "/terms.html"], (request, response, next) => {
   return response.render("terms");
 });
 
+app.get(["/support"], (request, response, next) => {
+  return response.render("support");
+});
+
+app.get(["/contact"], (request, response, next) => {
+  return response.render("contact");
+});
+
 app.get("/error-test", (request, response, next) => {
   next(new ConfirmedError(500, 999, "Test alerts", "Details here"));
 });
