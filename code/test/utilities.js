@@ -171,6 +171,16 @@ module.exports = {
       });
   },
   
+  addActiveIosSubscription: () => {
+    var addTestSubscription = fs.readFileSync(path.join(__dirname, "test-files", "add-active-ios-subscription.sql"), "utf-8");
+    return Database.query(addTestSubscription)
+      .then( result => {
+        if (result.rowCount !== 1) {
+          throw Error("Error inserting test subscription in database");
+        }
+      });
+  },
+  
   addOldIosSubscription: () => {
     var addOldIosSubscription = fs.readFileSync(path.join(__dirname, "test-files", "add-old-ios-subscription.sql"), "utf-8");
     return Database.query(addOldIosSubscription)

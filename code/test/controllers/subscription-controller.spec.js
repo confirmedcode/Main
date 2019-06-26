@@ -2,7 +2,7 @@ const should = require("chai").should();
 const sinon = require("sinon");
 const Client = require("../client.js");
 const Constants = require('../constants.js');
-const { reset, changeDate, resetDate, addOldIosSubscription, makeStripeSource } = require("../utilities.js");
+const { reset, changeDate, resetDate, addActiveIosSubscription, addOldIosSubscription, makeStripeSource } = require("../utilities.js");
 
 const { User } = require("shared/models");
 const { Certificate } = require("shared/models");
@@ -860,6 +860,47 @@ describe("Subscription Controller", () => {
             })
             .then(response => {
               response.body.length.should.equal(0);
+              done();
+            })
+            .catch(error => {
+              done(error);
+            });
+        });
+      });
+      
+      describe("Create and cancel Stripe subscription with active iOS subscription", () => {
+        after(function() {
+          Email.sendCancelSubscription.restore();
+          resetDate();
+        });
+        it("should not send cancellation email because there's an active iOS subscription", (done) => {
+          const spyEmailSendCancelSubscription = sinon.spy(Email, 'sendCancelSubscription');
+          Client.signupConfirmSignin()
+            .then(response => {
+              return addActiveIosSubscription();
+            })
+            .then(response => {
+              return makeStripeSource(NEW_CARD_TOKEN);
+            })
+            .then(response => {
+              return Client.newSubscription(response.id, false, "all-monthly")
+                .redirects(0);
+            })
+            .then(response => {
+              return Client.activeSubscriptions();
+            })
+            .then(response => {
+              var newSubscriptionId = response.body[1].receiptId; // the second sub is the Stripe sub
+              return Client.cancelSubscription(newSubscriptionId, "test");
+            })
+            .then(response => {
+              sinon.assert.notCalled(spyEmailSendCancelSubscription);
+              response.status.should.equal(200);
+              response.text.should.contain("Subscription cancelled successfully");
+              return Client.activeSubscriptions();
+            })
+            .then(response => {
+              response.body.length.should.equal(1);
               done();
             })
             .catch(error => {
