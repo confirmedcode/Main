@@ -1,4 +1,5 @@
 const should = require("chai").should();
+const sinon = require("sinon");
 const Client = require("../client.js");
 const Constants = require('../constants.js');
 const { reset, changeDate, resetDate, addOldIosSubscription, makeStripeSource } = require("../utilities.js");
@@ -6,6 +7,7 @@ const { reset, changeDate, resetDate, addOldIosSubscription, makeStripeSource } 
 const { User } = require("shared/models");
 const { Certificate } = require("shared/models");
 const { Stripe } = require("shared/utilities");
+const { Email } = require("shared/utilities");
 
 const TWENTY_DAYS = 20 * 86400000;
 const NEW_CARD_TOKEN = "tok_amex";
@@ -830,7 +832,11 @@ describe("Subscription Controller", () => {
     describe("Success", () => {
       
       describe("Create and cancel Stripe subscription", () => {
-        it("should have 0 active subscriptions at the end", (done) => {
+        after(function () {
+          Email.sendCancelSubscription.restore();
+        });
+        it("should have 0 active subscriptions at the end and also send cancellation email", (done) => {
+          const spyEmailSendCancelSubscription = sinon.spy(Email, 'sendCancelSubscription');
           Client.signupConfirmSignin()
             .then(response => {
               return makeStripeSource(NEW_CARD_TOKEN);
@@ -847,6 +853,7 @@ describe("Subscription Controller", () => {
               return Client.cancelSubscription(newSubscriptionId, "test");
             })
             .then(response => {
+              sinon.assert.calledOnce(spyEmailSendCancelSubscription);
               response.status.should.equal(200);
               response.text.should.contain("Subscription cancelled successfully");
               return Client.activeSubscriptions();

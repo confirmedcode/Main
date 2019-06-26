@@ -10,6 +10,8 @@ INSERT INTO subscriptions
   "in_trial",
   "failed_last_check",
   "renew_enabled",
+  "expiration_intent_cancelled",
+  "sent_cancellation_email",
   "updated"
 )
 VALUES
@@ -24,6 +26,8 @@ VALUES
   FALSE,
   FALSE,
   TRUE,
+  FALSE,
+  FALSE,
   '2018-09-25 22:53:31.202802+02'
 )
 RETURNING *;
