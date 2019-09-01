@@ -184,7 +184,7 @@ GET /signup-success
 
 ### Confirm Email
 
-A user that confirmes their email is assigned a certificate with source ID `CURRENT_SOURCE_ID`.
+A user that confirms their email is assigned a certificate with source ID `CURRENT_SOURCE_ID`.
 
 __Request__
 
@@ -906,9 +906,9 @@ Status Code | Error Code | Message
 400 | 63 | Android receipt does not match its signature
 400 | 64 | Android purchase failed on client side with __Response__ code
 400 | 65 | Unable to decode Android base64 receipt sent from client
-400 | 66 | Missing field in android receipt
+400 | 66 | Missing field in Android receipt
 400 | 67 | Android payment not received - still pending
-400 | 68 | Invalid android productId
+400 | 68 | Invalid Android productId
 400 | 69 | OrderId in client receipt and Google verified receipt do not match
 400 | 77 | Error setting new user password: Invalid reset code
 400 | 81 | Can't delete default payment method
