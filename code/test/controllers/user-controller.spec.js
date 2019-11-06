@@ -521,7 +521,7 @@ describe("User Controller", () => {
         });
       });
       
-      describe("Convert Android User", () => {
+      describe.skip("Convert Android User", () => {
         it("should add confirmed email successfully", (done) => {
           Client.signinWithReceipt("android", Constants.ANDROID_RECEIPT_VALID)
             .then(response => {
@@ -556,7 +556,7 @@ describe("User Controller", () => {
       
     describe("Failure", () => {
       
-      describe("Email already taken", () => {
+      describe.skip("Email already taken", () => {
         it("converts an iOS receipt with an email, then tries to convert Android receipt with same email, should fail", (done) => {
           Client.signinWithReceipt("ios", Constants.IOS_RECEIPT_VALID)
             .then(response => {
@@ -712,7 +712,7 @@ describe("User Controller", () => {
         });
       });
     
-      describe("Valid Android Receipt", () => {
+      describe.skip("Valid Android Receipt", () => {
         
         after(resetDate);
         
@@ -818,7 +818,7 @@ describe("User Controller", () => {
     
     describe("Failure", () => {
     
-      describe("Get iOS with Android-only Receipt", () => {  
+      describe.skip("Get iOS with Android-only Receipt", () => {  
         after(resetDate);
         it("should fail", (done) => {
           Client.signinWithReceipt("android", Constants.ANDROID_RECEIPT_VALID)
@@ -838,7 +838,7 @@ describe("User Controller", () => {
         });
       });
       
-      describe("Get Mac with Android-only Receipt", () => {  
+      describe.skip("Get Mac with Android-only Receipt", () => {  
         after(resetDate);
         it("should fail", (done) => {
           Client.signinWithReceipt("android", Constants.ANDROID_RECEIPT_VALID)
