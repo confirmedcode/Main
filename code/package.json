@@ -23,7 +23,7 @@
     "express-validator": "^5.3.0",
     "express-winston": "^3.0.0",
     "full-icu": "^1.2.1",
-    "helmet": "^3.13.0",
+    "helmet": "^3.21.2",
     "i18n": "^0.8.3",
     "password-rules": "0.0.3",
     "shared": "file:../../shared",
