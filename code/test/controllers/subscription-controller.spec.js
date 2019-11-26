@@ -574,7 +574,7 @@ describe("Subscription Controller", () => {
         });
       });
       
-      describe.skip("New subscription upgrade from Android", () => {
+      describe("New subscription upgrade from Android", () => {
         it("Should show upgrade page and instructions to cancel Android", (done) => {
           Client.signinWithReceipt("android", Constants.ANDROID_RECEIPT_VALID)
             .then(response => {
@@ -657,7 +657,7 @@ describe("Subscription Controller", () => {
         });
       });
       
-      describe.skip("Add Android receipt to existing user", () => {
+      describe("Add Android receipt to existing user", () => {
         it("should have 2 subscriptions: 1 iOS, 1 Stripe", (done) => {
           Client.signinWithEmail()
             .then(response => {
@@ -804,7 +804,7 @@ describe("Subscription Controller", () => {
         });
       });
       
-      describe.skip("Cancel Android from web", () => {
+      describe("Cancel Android from web", () => {
         it("should fail and tell user to go to Apple", (done) => {
           Client.signinWithReceipt("android", Constants.ANDROID_RECEIPT_VALID)
             .then(response => {

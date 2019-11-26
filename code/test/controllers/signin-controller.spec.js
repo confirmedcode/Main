@@ -112,7 +112,7 @@ describe("Signin Controller", () => {
         });
       });
       
-      describe.skip("Signin With Android Receipt", () => {
+      describe("Signin With Android Receipt", () => {
         it("should succeed", (done) => {
           Client.signinWithReceipt("android", Constants.ANDROID_RECEIPT_VALID)
             .then(response => {
