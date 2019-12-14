@@ -49,7 +49,7 @@ router.get("/signin",
 
 router.post("/signin",
 [ 
-  BruteForce(250),
+  BruteForce(50),
   oneOf(
     [
       [
