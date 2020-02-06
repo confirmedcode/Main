@@ -31,11 +31,14 @@ router.post("/forgot-password",
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
     .normalizeEmail(),
+  check("lockdown")
+    .toBoolean(false),
   validateCheck
 ],
 (request, response, next) => {
   const email = request.values.email;
-  User.generatePasswordReset(email)
+  const lockdown = request.values.lockdown;
+  User.generatePasswordReset(email, lockdown)
     .then( result => {
       request.flashRedirect("info", "If there is an account associated with that email, a password reset email will be sent to it.", "/signin");
     })
