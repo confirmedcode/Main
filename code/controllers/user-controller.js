@@ -146,7 +146,7 @@ router.get(["/confirm-email"],
   return User.confirmEmail(code, email)
     .then(success => {
       if (lockdown) {
-            return response.render("confirm-email-success-lockdown");
+        return response.render("confirm-email-success-lockdown");
       }
       else if (browser) {
         return request.flashRedirect("success", "Email confirmed. Please sign in.", "/signin?redirecturi=" + encodeURI("/new-subscription?browser=true"));
