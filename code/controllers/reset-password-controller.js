@@ -57,12 +57,16 @@ router.get("/reset-password",
     .isLength({ min: 32, max: 32 }).withMessage("Invalid reset code.")
     .isAlphanumeric().withMessage("Invalid reset code.")
     .trim(),
+  check("lockdown")
+    .toBoolean(false),
   validateCheck
 ],
 (request, response, next) => {
   const code = request.values.code;
+  const lockdown = request.values.lockdown;
   response.render("reset-password", {
-    code: code
+    code: code,
+    lockdown: lockdown
   });
 });
 
@@ -82,14 +86,22 @@ router.post("/reset-password",
       passwordRules(value);
       return value;
     }),
+  check("lockdown")
+    .toBoolean(false),
   validateCheck
 ],
 (request, response, next) => {
   const code = request.values.code;
   const newPassword = request.values.newPassword;
+  const lockdown = request.values.lockdown;
   User.resetPassword(code, newPassword)
     .then( success => {
-      request.flashRedirect("success", "New password set successfully.", "/signin");
+      if (lockdown) {
+        return response.render("reset-password-success-lockdown");
+      }
+      else {
+        request.flashRedirect("success", "New password set successfully.", "/signin");
+      }
     })
     .catch(error => { next(error); });
 });

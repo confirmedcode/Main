@@ -82,6 +82,8 @@ router.post("/signup",
     body("refer")
       .isEmpty()
   ]),
+  check("lockdown")
+    .toBoolean(false),
   validateCheck
 ],
 (request, response, next) => {
@@ -89,13 +91,14 @@ router.post("/signup",
   const password = request.values.password;
   const browser = request.values.browser;
   const refer = request.values.refer;
+  const lockdown = request.values.lockdown;
   var chain = Promise.resolve();
   if (refer) {
     chain = User.getReferrerUserId(refer);
   }
   return chain
     .then(referrerUserId => {
-      return User.createWithEmailAndPassword(email, password, browser, referrerUserId);
+      return User.createWithEmailAndPassword(email, password, browser, referrerUserId, lockdown);
     })
     .then(user => {
       if (browser) {
@@ -131,15 +134,21 @@ router.get(["/confirm-email"],
     .trim(),
   query("browser")
     .toBoolean(false),
+  check("lockdown")
+    .toBoolean(false),
   validateCheck
 ],
 (request, response, next) => {
   const email = decodeURI(request.values.email);
   const code = request.values.code;
   const browser = request.values.browser; 
+  const lockdown = request.values.lockdown;
   return User.confirmEmail(code, email)
     .then(success => {
-      if (browser) {
+      if (lockdown) {
+            return response.render("confirm-email-success-lockdown");
+      }
+      else if (browser) {
         return request.flashRedirect("success", "Email confirmed. Please sign in.", "/signin?redirecturi=" + encodeURI("/new-subscription?browser=true"));
       }
       else {
@@ -167,11 +176,14 @@ router.post("/resend-confirm-code",
   .exists().withMessage("Missing email address.")
   .isEmail().withMessage("Invalid email address.")
   .normalizeEmail(),
+  check("lockdown")
+    .toBoolean(false),
   validateCheck
 ],
 (request, response, next) => {
   const email = request.values.email;
-  User.resendConfirmCode(email)
+  const lockdown = request.values.lockdown;
+  User.resendConfirmCode(email, true)
     .then( results => {
       request.flashRedirect("info", "Confirmation email re-sent. Be sure to check your spam folder, as sometimes the email can get stuck there.", "/signin");
     })

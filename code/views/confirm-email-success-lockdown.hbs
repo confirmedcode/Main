@@ -1,0 +1,33 @@
+{{> header title="Lockdown Notification" }}
+
+<body class="text-center">
+  
+  {{> nav-loggedout }}
+  
+  <div class="container mt-5">
+    <div class="col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
+      
+      <div class="alert alert-success" role="alert" style="margin-left:auto; margin-right: auto;">
+        Email confirmed. Redirecting you back to finish signup...
+      </div>
+      
+      <div class="container-fluid p-3 mt-3 confirmed-bg">
+        <p style="font-size: 12px; margin-bottom: 4px; text-align: center;">If you aren't redirected, click below:</p>
+        <a href="lockdown://emailconfirmed" id="backButton" class="btn confirmed-blue-btn btn-sm text-white btn-block mt-2">Open Lockdown</a>
+        
+      </div>
+    </div>
+  </div>
+  
+  {{> footer}}
+
+  {{> bootstrapjs}}
+  
+  <script>
+      setTimeout(function(){
+         window.location.href = 'lockdown://emailconfirmed';
+      }, 2000);
+  </script>
+  
+</body>
+
