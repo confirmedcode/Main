@@ -120,7 +120,7 @@ router.post("/signup",
  *
  *********************************************/
 
-router.get(["/confirm-email"],
+router.get("/confirm-email",
 [
   BruteForce(50),
   query("email")
@@ -140,7 +140,7 @@ router.get(["/confirm-email"],
   validateCheck
 ],
 (request, response, next) => {
-  const email = decodeURI(request.values.email);
+  const email = decodeURIComponent(request.values.email);
   const code = request.values.code;
   const browser = request.values.browser; 
   const lockdown = request.values.lockdown;
