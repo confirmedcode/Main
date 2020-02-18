@@ -126,6 +126,7 @@ router.get(["/confirm-email"],
   query("email")
     .exists().withMessage("Missing email.")
     .not().isEmpty().withMessage("Missing email.")
+    .normalizeEmail()
     .isEmail().withMessage("Invalid email address."),
   query("code")
     .exists().withMessage("Missing confirmation code.")
