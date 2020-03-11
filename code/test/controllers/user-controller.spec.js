@@ -288,6 +288,19 @@ describe("User Controller", () => {
         });
       });
       
+      describe("Underscore should count as a special character in password", () => {
+        it("should respond success", (done) => {
+          Client.signup(Constants.NEW_USER_EMAIL, "Hello1111_")
+            .then(response => {
+              response.should.have.status(200);
+              done();
+            })
+            .catch(error => {
+              done(error);
+            });
+        });
+      });
+      
     });
     
     describe("Failure", () => {
@@ -385,6 +398,20 @@ describe("User Controller", () => {
               if (user.id != null) {
                 throw Error("user should be null with invalid email");
               }
+              done();
+            })
+            .catch(error => {
+              done(error);
+            });
+        });
+      });
+      
+      describe("No special character in password", () => {
+        it("should fail", (done) => {
+          Client.signup(Constants.NEW_USER_EMAIL, "Hello1111")
+            .then(response => {
+              response.should.have.status(400);
+              response.text.should.contain("Password must contain a special character");
               done();
             })
             .catch(error => {
