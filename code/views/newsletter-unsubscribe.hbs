@@ -1,0 +1,31 @@
+{{> header title="Email Unsubscribe" secureurl="true"}}
+
+<body class="text-center">
+  
+  {{> nav-loggedout lockdown=true}}
+  
+  <div class="container mt-4"> 
+    <div class="col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
+      
+      <h1 class="h6 text-center mt-5">Email Unsubscribe</h1>
+      
+      {{> flash }}
+      
+      <div class="alert alert-secondary" role="alert" id="message" style="margin-left:auto; margin-right: auto;">Are you sure you want to unsubscribe from the Lockdown newsletter?</div>
+
+      <div class="container-fluid p-3 mt-3 confirmed-bg">
+        <form action="/newsletter-unsubscribe" method="POST">
+          <input type="email" id="email" name="email" class="form-control mb-1 mt-2" value="{{email}}" required>
+          <input type="hidden" id="code" name="code" class="form-control mb-1 mt-2" value="{{code}}" required>
+          <button id="doNotEmailButton" type="submit" class="btn confirmed-blue-btn btn-sm text-white btn-block mt-3">Unsubscribe</button>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+  
+  {{> footer}}
+
+  {{> bootstrapjs}}
+  
+</body>

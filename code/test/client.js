@@ -31,19 +31,20 @@ module.exports = {
       .send(params);
   },
   
-  signup: (email = Constants.NEW_USER_EMAIL, password = Constants.NEW_USER_PASSWORD, browser = null, refer = null) => {
+  signup: (email = Constants.NEW_USER_EMAIL, password = Constants.NEW_USER_PASSWORD, browser = null, refer = null, lockdown = false) => {
     return agent
       .post("/signup")
       .send({
         email: email,
         password: password,
         browser: browser,
-        refer: refer
+        refer: refer,
+        lockdown: lockdown
       });
   },
   
-  signupConfirm: (email = Constants.NEW_USER_EMAIL, password = Constants.NEW_USER_PASSWORD, browser = null) => {
-    return module.exports.signup()
+  signupConfirm: (email = Constants.NEW_USER_EMAIL, password = Constants.NEW_USER_PASSWORD, browser = null, refer = null, lockdown = false) => {
+    return module.exports.signup(email, password, browser, refer, lockdown)
       .then(response => {
         return User.getWithEmail(email);
       })
@@ -52,8 +53,8 @@ module.exports = {
       });
   },
   
-  signupConfirmSignin: (email = Constants.NEW_USER_EMAIL, password = Constants.NEW_USER_PASSWORD, browser = null) => {
-    return module.exports.signup()
+  signupConfirmSignin: (email = Constants.NEW_USER_EMAIL, password = Constants.NEW_USER_PASSWORD, browser = null, refer = null, lockdown = false) => {
+    return module.exports.signup(email, password, browser, refer, lockdown)
       .then(response => {
         return User.getWithEmail(email);
       })

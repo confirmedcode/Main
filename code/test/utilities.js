@@ -140,6 +140,20 @@ module.exports = {
         return module.exports.addSubscription();
       });
   },
+  
+  addCertificatesBatchNonWorking: (numCerts) => {
+    let chain = Promise.resolve();
+    for (var i = 0; i < numCerts; i++) {
+      chain = chain.then(() => {
+        return Database.query(
+        `INSERT INTO certificates("serial","source_id","user_id","revoked","assigned","p12_encrypted")
+          VALUES ($1, $2, $3, $4, $5, $6)
+          RETURNING *`,
+          [Secure.randomString(10), "localsource", Secure.randomString(32), false, false, "test"]);
+      })
+    }
+    return chain;
+  },
 
   addCertificates: () => {
     var addCertificatesSql = fs.readFileSync(path.join(__dirname, "test-files", "add-certificates.sql"), "utf-8");

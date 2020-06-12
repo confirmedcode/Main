@@ -7,7 +7,7 @@
     "start": "node NODE_ICU_DATA=node_modules/full-icu index.js",
     "startLocal": ". ../../setLocalEnv.sh && ENVIRONMENT=LOCAL NODE_ENV=development NODE_ICU_DATA=node_modules/full-icu nodemon index.js",
     "test": "NODE_ENV=test NODE_ICU_DATA=node_modules/full-icu nyc mocha --recursive --timeout 120000 --exit",
-    "testLocal": ". ../../setLocalEnv.sh && ENVIRONMENT=LOCAL NODE_ENV=test NODE_ICU_DATA=node_modules/full-icu nyc mocha --recursive --timeout 120000 --exit"
+    "testLocal": ". ../../setLocalEnv.sh && ENVIRONMENT=LOCAL NODE_ENV=test NODE_ICU_DATA=node_modules/full-icu nyc mocha --recursive --timeout 12000000 --exit"
   },
   "keywords": [],
   "author": "",

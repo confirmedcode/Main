@@ -311,4 +311,57 @@ router.post("/do-not-email",
     .catch(error => { next(error); });
 });
 
+
+/*********************************************
+ *
+ * Newsletter Unsubscribe
+ *
+ *********************************************/
+
+router.get("/newsletter-unsubscribe",
+[
+  BruteForce(200),
+  check("email")
+    .exists().withMessage("Missing email address.")
+    .isEmail().withMessage("Invalid email address.")
+    .normalizeEmail(),
+  check("code")
+    .isAlphanumeric().withMessage("Code must be alphanumeric"),
+  validateCheck
+],
+(request, response, next) => {
+  const email = request.values.email;
+  const code = request.values.code;
+  response.render("newsletter-unsubscribe", {
+    code: code,
+    email: email
+  });
+});
+  
+router.post("/newsletter-unsubscribe",
+[
+  BruteForce(20),
+  body("email")
+    .exists().withMessage("Missing email address.")
+    .isEmail().withMessage("Invalid email address.")
+    .normalizeEmail(),
+  body("code")
+    .isAlphanumeric().withMessage("Code must be alphanumeric"),
+  validateCheck
+],
+(request, response, next) => {
+  const email = request.values.email;
+  const code = request.values.code;
+  User.setNewsletterUnsubscribe(email, code)
+    .then( result => {
+      request.flashRedirect("info", "You will no longer receive any newsletter emails from us.", "/newsletter-unsubscribe-success");
+    })
+    .catch(error => { next(error); });
+});
+
+router.get("/newsletter-unsubscribe-success",
+(request, response, next) => {
+  response.render("newsletter-unsubscribe-success");
+});
+
 module.exports = router;
