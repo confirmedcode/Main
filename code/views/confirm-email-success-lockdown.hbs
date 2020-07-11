@@ -8,12 +8,11 @@
     <div class="col-xl-4 offset-xl-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 text-left">
       
       <div class="alert alert-success" role="alert" style="margin-left:auto; margin-right: auto;">
-        Email confirmed. Redirecting you back to finish signup...
+        Email confirmed successfully. On your mobile device, tap below to return to Lockdown.
       </div>
       
-      <div class="container-fluid p-3 mt-3 confirmed-bg">
-        <p style="font-size: 12px; margin-bottom: 4px; text-align: center;">If you aren't redirected, click below:</p>
-        <a href="lockdown://emailconfirmed" id="backButton" class="btn confirmed-blue-btn btn-sm text-white btn-block mt-2">Open Lockdown</a>
+      <div class="container-fluid p-0 mt-1 confirmed-bg">
+        <a href="lockdown://emailconfirmed" id="backButton" class="btn confirmed-blue-btn btn-sm text-white btn-block mt-2" target="_blank"><strong>Open Lockdown</strong></a>
         
       </div>
     </div>
@@ -22,12 +21,6 @@
   {{> footer}}
 
   {{> bootstrapjs}}
-  
-  <script>
-      setTimeout(function(){
-         window.location.href = 'lockdown://emailconfirmed';
-      }, 2000);
-  </script>
   
 </body>
 
