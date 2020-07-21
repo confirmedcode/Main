@@ -82,7 +82,8 @@ router.post("/change-email",
     .exists().withMessage("Missing password.")
     .not().isEmpty().withMessage("Missing password.")
     .custom((value, {req, location, path}) => {
-      return req.user.assertPassword(value);
+      return req.user.assertPassword(value)
+      .catch( error => Promise.reject())
     }).withMessage("Incorrect password."),
   validateCheck
 ],
@@ -149,7 +150,8 @@ router.post("/change-password",
     .exists().withMessage("Missing current password.")
     .not().isEmpty().withMessage("Missing current password.")
     .custom((value, {req, location, path}) => {
-      return req.user.assertPassword(value);
+      return req.user.assertPassword(value)
+      .catch( error => Promise.reject())
     }).withMessage("Current password is incorrect."),
   body("newPassword")
     .exists().withMessage("Missing new password.")
