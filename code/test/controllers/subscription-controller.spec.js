@@ -2,23 +2,38 @@ const should = require("chai").should();
 const sinon = require("sinon");
 const Client = require("../client.js");
 const Constants = require('../constants.js');
-const { reset, changeDate, resetDate, addActiveIosSubscription, addOldIosSubscription, makeStripeSource } = require("../utilities.js");
+const {
+  reset,
+  changeDate,
+  resetDate,
+  addActiveIosSubscription,
+  addOldIosSubscription,
+  makeStripeSource
+} = require("../utilities.js");
 
-const { User } = require("shared/models");
-const { Certificate } = require("shared/models");
-const { Stripe } = require("shared/utilities");
-const { Email } = require("shared/utilities");
+const {
+  User
+} = require("shared/models");
+const {
+  Certificate
+} = require("shared/models");
+const {
+  Stripe
+} = require("shared/utilities");
+const {
+  Email
+} = require("shared/utilities");
 
 const TWENTY_DAYS = 20 * 86400000;
 const NEW_CARD_TOKEN = "tok_amex";
 const NEW_CARD_GB_TOKEN = "tok_gb";
 
 describe("Subscription Controller", () => {
-  
+
   beforeEach(reset);
 
   describe("POST /subscriptions", () => {
-    
+
     describe("Success", () => {
       describe("New account", () => {
         it("should show 0 subscriptions", (done) => {
@@ -35,7 +50,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Existing account with Stripe subscription", () => {
         it("should show 1 subscription", (done) => {
           Client.signinWithEmail()
@@ -51,7 +66,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Create account with iOS receipt", () => {
         it("should show 1 subscription", (done) => {
           Client.signinWithReceipt("ios", Constants.IOS_RECEIPT_VALID)
@@ -67,16 +82,16 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Create account with iOS receipt, then add a Stripe subscription", () => {
         it("should show 1 expired and 1 active subscription", (done) => {
           Client.signinWithReceipt("ios", Constants.IOS_RECEIPT_VALID)
             .then(response => {
               return makeStripeSource(NEW_CARD_TOKEN);
             })
-            .then( result => {
+            .then(result => {
               return Client.newSubscription(result.id, false, "all-monthly")
-              .redirects(0);
+                .redirects(0);
             })
             .then(response => {
               return Client.subscriptions();
@@ -90,9 +105,9 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
     describe("Failure", () => {
       it("not logged in, should fail", (done) => {
         Client.subscriptions()
@@ -106,13 +121,13 @@ describe("Subscription Controller", () => {
           });
       });
     });
-    
+
   });
-  
+
   describe("POST /active-subscriptions", () => {
-    
+
     describe("Success", () => {
-      
+
       describe("New account", () => {
         it("should show 0 active subscriptions", (done) => {
           Client.signupConfirmSignin()
@@ -128,7 +143,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Existing account with Stripe subscription", () => {
         it("should show 1 active subscription", (done) => {
           Client.signinWithEmail()
@@ -144,7 +159,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Create account with iOS receipt, set date to past", () => {
         after(resetDate);
         it("should show 1 active subscription", (done) => {
@@ -162,7 +177,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Create account with iOS receipt, don't change date", () => {
         it("should show 0 active subscription", (done) => {
           Client.signinWithReceipt("ios", Constants.IOS_RECEIPT_VALID)
@@ -178,7 +193,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Create account with iOS receipt (expired), then add a Stripe subscription", () => {
         it("should show 1 active subscription", (done) => {
           Client.signinWithReceipt("ios", Constants.IOS_RECEIPT_VALID)
@@ -201,7 +216,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Create account with Stripe subscription, then cancel it", () => {
         it("should show 1 active subscription, then 0 active subscriptions", (done) => {
           Client.signupConfirmSignin()
@@ -232,9 +247,9 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
     describe("Failure", () => {
       it("not logged in, should fail", (done) => {
         Client.activeSubscriptions()
@@ -248,13 +263,13 @@ describe("Subscription Controller", () => {
           });
       });
     });
-    
+
   });
-  
+
   describe("GET /new-subscription", () => {
-    
+
     describe("Success", () => {
-      
+
       describe("From Browser", () => {
         it("should show nav bar", (done) => {
           Client.signupConfirmSignin()
@@ -274,7 +289,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-    
+
       describe("From Mac/Windows Client", () => {
         it("should show not show nav bar", (done) => {
           Client.signupConfirmSignin()
@@ -291,7 +306,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Show trial text for new users", () => {
         it("should show trial text", (done) => {
           Client.signupConfirmSignin()
@@ -307,7 +322,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-    
+
       describe("Don't show trial text for old users", () => {
         it("should show trial text", (done) => {
           Client.signinWithEmail()
@@ -323,7 +338,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-    
+
       describe("Show existing payment methods on new subscription page", () => {
         it("should show payment methods", (done) => {
           Client.signupConfirmSignin()
@@ -353,7 +368,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-    
+
       describe("Show different locale using browser header", () => {
         it("should show £8.99/month for en-GB", (done) => {
           Client.signupConfirmSignin()
@@ -370,7 +385,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-    
+
       describe("Show different locale using parameter", () => {
         it("should show 99,99 €/year for de-de", (done) => {
           Client.signupConfirmSignin()
@@ -388,11 +403,11 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
 
     describe("Failure", () => {
-    
+
       describe("Don't allow multiple Pro subscriptions", () => {
         it("should tell existing user they already have Pro subscription", (done) => {
           Client.signinWithEmail()
@@ -409,15 +424,15 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
   });
-  
+
   describe("POST /new-subscription", () => {
-    
+
     describe("Success", () => {
-      
+
       describe("Use Token", () => {
         it("Sign in and create new subscription", (done) => {
           Client.signupConfirmSignin()
@@ -441,7 +456,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Use token, browser = true", () => {
         it("Should redirect to /clients", (done) => {
           Client.signupConfirmSignin()
@@ -461,7 +476,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Use token, upgrade from iOS", () => {
         it("Should show iOS upgrade message", (done) => {
           Client.signupConfirmSignin()
@@ -480,7 +495,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Use token, upgrade from Android", () => {
         it("Should show Android upgrade message", (done) => {
           Client.signupConfirmSignin()
@@ -499,7 +514,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Use Existing Source", () => {
         it("New user, create subscription, cancel it, create subscription again with old source", (done) => {
           Client.signupConfirmSignin()
@@ -539,7 +554,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("New subscription with GBP card", () => {
         it("Should create subscription with GBP plan and user should have GBP currency at Stripe", (done) => {
           Client.signupConfirmSignin()
@@ -573,8 +588,8 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
-      describe("New subscription upgrade from Android", () => {
+
+      describe.skip("New subscription upgrade from Android", () => {
         it("Should show upgrade page and instructions to cancel Android", (done) => {
           Client.signinWithReceipt("android", Constants.ANDROID_RECEIPT_VALID)
             .then(response => {
@@ -601,11 +616,11 @@ describe("Subscription Controller", () => {
             });
         });
       });
-    
+
     });
-    
+
     describe("Failure", () => {
-      
+
       describe("Don't allow two trials", () => {
         it("New user, create subscription, cancel it, create subscription again with old source", (done) => {
           Client.signinWithEmail()
@@ -626,15 +641,15 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
   });
-  
+
   describe("POST /subscription-event", () => {
-    
+
     describe("Success", () => {
-      
+
       describe("Add iOS receipt to existing user", () => {
         it("should have 2 subscriptions: 1 iOS, 1 Stripe", (done) => {
           Client.signinWithEmail()
@@ -656,8 +671,8 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
-      describe("Add Android receipt to existing user", () => {
+
+      describe.skip("Add Android receipt to existing user", () => {
         it("should have 2 subscriptions: 1 iOS, 1 Stripe", (done) => {
           Client.signinWithEmail()
             .then(response => {
@@ -678,7 +693,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Update iOS Receipt", () => {
         it("should have 2 subscriptions: 1 iOS, 1 Stripe, and the iOS one should be updated from expiring in 2000 to 2018", (done) => {
           addOldIosSubscription()
@@ -708,11 +723,11 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
     describe("Failure", () => {
-      
+
       describe("No session", () => {
         it("Should fail", (done) => {
           Client.subscriptionEvent("ios", Constants.IOS_RECEIPT_VALID)
@@ -726,15 +741,15 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
   });
-  
+
   describe("GET /cancel-subscription", () => {
-    
+
     describe("Success", () => {
-      
+
       describe("Show cancel subcription page for Stripe", () => {
         it("should succeed", (done) => {
           var newSubscriptionId = "";
@@ -766,11 +781,11 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
     describe("Failure", () => {
-      
+
       describe("not logged in", () => {
         it("should fail", (done) => {
           Client.getUrl("/cancel-subscription", {
@@ -784,7 +799,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Cancel iOS from web", () => {
         it("should fail and tell user to go to Apple", (done) => {
           Client.signinWithReceipt("ios", Constants.IOS_RECEIPT_VALID)
@@ -803,8 +818,8 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
-      describe("Cancel Android from web", () => {
+
+      describe.skip("Cancel Android from web", () => {
         it("should fail and tell user to go to Apple", (done) => {
           Client.signinWithReceipt("android", Constants.ANDROID_RECEIPT_VALID)
             .then(response => {
@@ -822,15 +837,15 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
   });
-  
+
   describe("POST /cancel-subscription", () => {
-    
+
     describe("Success", () => {
-      
+
       describe("Create and cancel Stripe subscription", () => {
         after(function () {
           Email.sendCancelSubscription.restore();
@@ -867,9 +882,9 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("Create and cancel Stripe subscription with active iOS subscription", () => {
-        after(function() {
+        after(function () {
           Email.sendCancelSubscription.restore();
           resetDate();
         });
@@ -908,11 +923,11 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
     });
-    
+
     describe("Failure", () => {
-      
+
       describe("not logged in", () => {
         it("should fail", (done) => {
           Client.cancelSubscription("some_receipt", "test")
@@ -923,7 +938,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("invalid receipt", () => {
         it("should fail", (done) => {
           Client.signupConfirmSignin()
@@ -947,7 +962,7 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
+
       describe("cancel some other user's receipt", () => {
         it("should fail", (done) => {
           Client.signupConfirmSignin()
@@ -971,9 +986,9 @@ describe("Subscription Controller", () => {
             });
         });
       });
-      
-    });    
-    
+
+    });
+
   });
-  
+
 });

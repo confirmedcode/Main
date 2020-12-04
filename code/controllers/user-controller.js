@@ -3,17 +3,30 @@ const Logger = require("shared/logger");
 
 // Middleware
 const authenticate = require("../middleware/authenticate.js");
-const { check, body, query, oneOf } = require("express-validator/check");
+const {
+  check,
+  body,
+  query,
+  oneOf
+} = require("express-validator/check");
 const validateCheck = require("../middleware/validate-check.js");
 const passwordRules = require("../middleware/password-rules.js");
-const { BruteForce } = require("shared/redis");
+const {
+  BruteForce
+} = require("shared/redis");
 
 // Models
-const { User } = require("shared/models");
-const { Receipt } = require("shared/models");
+const {
+  User
+} = require("shared/models");
+const {
+  Receipt
+} = require("shared/models");
 
 // Constants
 const VALID_PLATFORMS = ["android", "ios", "mac", "windows"];
+const MATCH_DOMAINS = require('disposable-email-domains');
+const MATCH_WILDCARDS = require('disposable-email-domains/wildcard.json');
 
 // Routes
 const router = require("express").Router();
@@ -25,34 +38,35 @@ const router = require("express").Router();
  *********************************************/
 
 router.get("/signup",
-[
-  query("refer"),
-  validateCheck
-],
-(request, response, next) => {
-  const refer = request.values.refer;
-  var chain = Promise.resolve();
-  if (refer) {
-    chain = User.getReferrerUserId(refer);
-  }
-  return chain
-    .then(referrerUserId => {
-      if (referrerUserId) {
-        response.render("signup", {
-          refer: refer
-        });
-      }
-      else {
-        response.render("signup");
-      }
-    })
-    .catch( error => { next(error); });
-});
+  [
+    query("refer"),
+    validateCheck
+  ],
+  (request, response, next) => {
+    const refer = request.values.refer;
+    var chain = Promise.resolve();
+    if (refer) {
+      chain = User.getReferrerUserId(refer);
+    }
+    return chain
+      .then(referrerUserId => {
+        if (referrerUserId) {
+          response.render("signup", {
+            refer: refer
+          });
+        } else {
+          response.render("signup");
+        }
+      })
+      .catch(error => {
+        next(error);
+      });
+  });
 
 router.get("/signup-success",
-(request, response, next) => {
-  response.render("signup-success");
-});
+  (request, response, next) => {
+    response.render("signup-success");
+  });
 
 /*********************************************
  *
@@ -61,58 +75,72 @@ router.get("/signup-success",
  *********************************************/
 
 router.post("/signup",
-[
-  BruteForce(50),
-  body("email")
+  [
+    BruteForce(50),
+    body("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
     .normalizeEmail(),
-  body("password")
+    body("password")
     .exists().withMessage("Missing password.")
     .not().isEmpty().withMessage("Missing password.")
     .custom(value => {
       passwordRules(value);
       return value;
     }),
-  check("browser")
+    check("browser")
     .toBoolean(false),
-  oneOf([
-    body("refer")
+    oneOf([
+      body("refer")
       .isAlphanumeric().withMessage("Referral code must be alphanumeric."),
-    body("refer")
+      body("refer")
       .isEmpty()
-  ]),
-  check("lockdown")
+    ]),
+    check("lockdown")
     .toBoolean(false),
-  validateCheck
-],
-(request, response, next) => {
-  const email = request.values.email;
-  const password = request.values.password;
-  const browser = request.values.browser;
-  const refer = request.values.refer;
-  const lockdown = request.values.lockdown;
-  var chain = Promise.resolve();
-  if (refer) {
-    chain = User.getReferrerUserId(refer);
-  }
-  return chain
-    .then(referrerUserId => {
-      return User.createWithEmailAndPassword(email, password, browser, referrerUserId, lockdown);
-    })
-    .then(user => {
-      if (browser) {
-        response.redirect("/signup-success");
+    validateCheck
+  ],
+  (request, response, next) => {
+    const email = request.values.email;
+    const password = request.values.password;
+    const browser = request.values.browser;
+    const refer = request.values.refer;
+    const lockdown = request.values.lockdown;
+
+    let emailSplit = email.split("@", 2);
+    if (emailSplit.length > 1) {
+      let splitSecond = emailSplit[1].toLowerCase();
+      if (MATCH_DOMAINS.includes(splitSecond)) {
+        return next(new ConfirmedError(400, 397, "Error Signing Up. Please contact our support team for assistance with error code 397."));
       }
-      else {
-        response.status(200).json({
-          code: 1,
-          message: "Email Confirmation Sent"
-        });
-      }
-    })
-    .catch( error => next(error) );
-});
+      MATCH_WILDCARDS.some(function (value) {
+        if (splitSecond.endsWith("." + value) || splitSecond == value) {
+          next(new ConfirmedError(400, 398, "Error Signing Up. Please contact our support team for assistance with error code 398."));
+          return true;
+        }
+      })
+    }
+
+    var chain = Promise.resolve();
+    if (refer) {
+      chain = User.getReferrerUserId(refer);
+    }
+    return chain
+      .then(referrerUserId => {
+        return User.createWithEmailAndPassword(email, password, browser, referrerUserId, lockdown);
+      })
+      .then(user => {
+        if (browser) {
+          response.redirect("/signup-success");
+        } else {
+          response.status(200).json({
+            code: 1,
+            message: "Email Confirmation Sent"
+          });
+        }
+      })
+      .catch(error => next(error));
+  });
 
 /*********************************************
  *
@@ -121,43 +149,41 @@ router.post("/signup",
  *********************************************/
 
 router.get("/confirm-email",
-[
-  BruteForce(50),
-  query("email")
+  [
+    BruteForce(50),
+    query("email")
     .exists().withMessage("Missing email.")
     .not().isEmpty().withMessage("Missing email.")
     .normalizeEmail()
     .isEmail().withMessage("Invalid email address."),
-  query("code")
+    query("code")
     .exists().withMessage("Missing confirmation code.")
     .not().isEmpty().withMessage("Missing confirmation code.")
     .isAlphanumeric().withMessage("Invalid confirmation code.")
     .trim(),
-  query("browser")
+    query("browser")
     .toBoolean(false),
-  check("lockdown")
+    check("lockdown")
     .toBoolean(false),
-  validateCheck
-],
-(request, response, next) => {
-  const email = decodeURIComponent(request.values.email);
-  const code = request.values.code;
-  const browser = request.values.browser; 
-  const lockdown = request.values.lockdown;
-  return User.confirmEmail(code, email)
-    .then(success => {
-      if (lockdown) {
-        return response.render("confirm-email-success-lockdown");
-      }
-      else if (browser) {
-        return request.flashRedirect("success", "Email confirmed. Please sign in.", "/signin?redirecturi=" + encodeURI("/new-subscription?browser=true"));
-      }
-      else {
-        return response.render("confirm-email-success");
-      }
-    })
-    .catch( error => next(error) );
-});
+    validateCheck
+  ],
+  (request, response, next) => {
+    const email = decodeURIComponent(request.values.email);
+    const code = request.values.code;
+    const browser = request.values.browser;
+    const lockdown = request.values.lockdown;
+    return User.confirmEmail(code, email)
+      .then(success => {
+        if (lockdown) {
+          return response.render("confirm-email-success-lockdown");
+        } else if (browser) {
+          return request.flashRedirect("success", "Email confirmed. Please sign in.", "/signin?redirecturi=" + encodeURI("/new-subscription?browser=true"));
+        } else {
+          return response.render("confirm-email-success");
+        }
+      })
+      .catch(error => next(error));
+  });
 
 /*********************************************
  *
@@ -166,30 +192,30 @@ router.get("/confirm-email",
  *********************************************/
 
 router.get("/resend-confirm-code",
-(request, response, next) => {
-  response.render("resend-confirm-code");
-});
+  (request, response, next) => {
+    response.render("resend-confirm-code");
+  });
 
 router.post("/resend-confirm-code",
-[
-  BruteForce(20),
-  body("email")
-  .exists().withMessage("Missing email address.")
-  .isEmail().withMessage("Invalid email address.")
-  .normalizeEmail(),
-  check("lockdown")
+  [
+    BruteForce(20),
+    body("email")
+    .exists().withMessage("Missing email address.")
+    .isEmail().withMessage("Invalid email address.")
+    .normalizeEmail(),
+    check("lockdown")
     .toBoolean(false),
-  validateCheck
-],
-(request, response, next) => {
-  const email = request.values.email;
-  const lockdown = request.values.lockdown;
-  User.resendConfirmCode(email, true)
-    .then( results => {
-      request.flashRedirect("info", "Confirmation email re-sent. Be sure to check your spam folder, as sometimes the email can get stuck there.", "/signin");
-    })
-    .catch( error => next(error) );
-});
+    validateCheck
+  ],
+  (request, response, next) => {
+    const email = request.values.email;
+    const lockdown = request.values.lockdown;
+    User.resendConfirmCode(email, true)
+      .then(results => {
+        request.flashRedirect("info", "Confirmation email re-sent. Be sure to check your spam folder, as sometimes the email can get stuck there.", "/signin");
+      })
+      .catch(error => next(error));
+  });
 
 /*********************************************
  *
@@ -198,37 +224,37 @@ router.post("/resend-confirm-code",
  *********************************************/
 
 router.post("/convert-shadow-user",
-[
-  BruteForce(30),
-  authenticate.checkAndSetUser,
-  body("newemail")
+  [
+    BruteForce(30),
+    authenticate.checkAndSetUser,
+    body("newemail")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
     .normalizeEmail(),
-  body("newpassword")
+    body("newpassword")
     .exists().withMessage("Missing password.")
     .not().isEmpty().withMessage("Missing password.")
     .custom(value => {
       passwordRules(value);
       return value;
     }),
-  validateCheck
-],
-(request, response, next) => {
-  const newEmail = request.values.newemail;
-  const newPassword = request.values.newpassword;
-  if (request.user.emailHashed && request.user.emailConfirmed == true) {
-    return next(new ConfirmedError(400, 48, "Can't convert shadow user that already has a confirmed email."));
-  }
-  return request.user.convertShadowUser(newEmail, newPassword)
-    .then( result => {
-      response.status(200).json({
-        code: 1,
-        message: "Email Confirmation Sent"
-      });
-    })
-    .catch( error => next(error) );
-});
+    validateCheck
+  ],
+  (request, response, next) => {
+    const newEmail = request.values.newemail;
+    const newPassword = request.values.newpassword;
+    if (request.user.emailHashed && request.user.emailConfirmed == true) {
+      return next(new ConfirmedError(400, 48, "Can't convert shadow user that already has a confirmed email."));
+    }
+    return request.user.convertShadowUser(newEmail, newPassword)
+      .then(result => {
+        response.status(200).json({
+          code: 1,
+          message: "Email Confirmation Sent"
+        });
+      })
+      .catch(error => next(error));
+  });
 
 /*********************************************
  *
@@ -237,9 +263,9 @@ router.post("/convert-shadow-user",
  *********************************************/
 
 router.get("/clients",
-(request, response, next) => {
-  response.render("clients");
-});
+  (request, response, next) => {
+    response.render("clients");
+  });
 
 /*********************************************
  *
@@ -248,21 +274,23 @@ router.get("/clients",
  *********************************************/
 
 router.post("/get-key",
-[
-  BruteForce(200),
-  authenticate.checkAndSetUser,
-  check("platform")
+  [
+    BruteForce(200),
+    authenticate.checkAndSetUser,
+    check("platform")
     .isIn(VALID_PLATFORMS).withMessage("Unrecognized platform."),
-  validateCheck
-],
-(request, response, next) => {
-  const platform = request.values.platform;
-  return request.user.getKey(platform)
-    .then(config => {
-      response.status(200).json(config);
-    })
-    .catch(error => { next(error); });
-});
+    validateCheck
+  ],
+  (request, response, next) => {
+    const platform = request.values.platform;
+    return request.user.getKey(platform)
+      .then(config => {
+        response.status(200).json(config);
+      })
+      .catch(error => {
+        next(error);
+      });
+  });
 
 /*********************************************
  *
@@ -271,45 +299,47 @@ router.post("/get-key",
  *********************************************/
 
 router.get("/do-not-email",
-[
-  BruteForce(200),
-  check("email")
+  [
+    BruteForce(200),
+    check("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
     .normalizeEmail(),
-  check("code")
+    check("code")
     .isAlphanumeric().withMessage("Code must be alphanumeric"),
-  validateCheck
-],
-(request, response, next) => {
-  const email = request.values.email;
-  const code = request.values.code;
-  response.render("do-not-email", {
-    code: code,
-    email: email
+    validateCheck
+  ],
+  (request, response, next) => {
+    const email = request.values.email;
+    const code = request.values.code;
+    response.render("do-not-email", {
+      code: code,
+      email: email
+    });
   });
-});
-  
+
 router.post("/do-not-email",
-[
-  BruteForce(20),
-  body("email")
+  [
+    BruteForce(20),
+    body("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
     .normalizeEmail(),
-  body("code")
+    body("code")
     .isAlphanumeric().withMessage("Code must be alphanumeric"),
-  validateCheck
-],
-(request, response, next) => {
-  const email = request.values.email;
-  const code = request.values.code;
-  User.setDoNotEmail(email, code)
-    .then( result => {
-      request.flashRedirect("info", "You will no longer receive any emails from us.", "/signin");
-    })
-    .catch(error => { next(error); });
-});
+    validateCheck
+  ],
+  (request, response, next) => {
+    const email = request.values.email;
+    const code = request.values.code;
+    User.setDoNotEmail(email, code)
+      .then(result => {
+        request.flashRedirect("info", "You will no longer receive any emails from us.", "/signin");
+      })
+      .catch(error => {
+        next(error);
+      });
+  });
 
 
 /*********************************************
@@ -319,49 +349,51 @@ router.post("/do-not-email",
  *********************************************/
 
 router.get("/newsletter-unsubscribe",
-[
-  BruteForce(200),
-  check("email")
+  [
+    BruteForce(200),
+    check("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
     .normalizeEmail(),
-  check("code")
+    check("code")
     .isAlphanumeric().withMessage("Code must be alphanumeric"),
-  validateCheck
-],
-(request, response, next) => {
-  const email = request.values.email;
-  const code = request.values.code;
-  response.render("newsletter-unsubscribe", {
-    code: code,
-    email: email
+    validateCheck
+  ],
+  (request, response, next) => {
+    const email = request.values.email;
+    const code = request.values.code;
+    response.render("newsletter-unsubscribe", {
+      code: code,
+      email: email
+    });
   });
-});
-  
+
 router.post("/newsletter-unsubscribe",
-[
-  BruteForce(20),
-  body("email")
+  [
+    BruteForce(20),
+    body("email")
     .exists().withMessage("Missing email address.")
     .isEmail().withMessage("Invalid email address.")
     .normalizeEmail(),
-  body("code")
+    body("code")
     .isAlphanumeric().withMessage("Code must be alphanumeric"),
-  validateCheck
-],
-(request, response, next) => {
-  const email = request.values.email;
-  const code = request.values.code;
-  User.setNewsletterUnsubscribe(email, code)
-    .then( result => {
-      request.flashRedirect("info", "You will no longer receive any newsletter emails from us.", "/newsletter-unsubscribe-success");
-    })
-    .catch(error => { next(error); });
-});
+    validateCheck
+  ],
+  (request, response, next) => {
+    const email = request.values.email;
+    const code = request.values.code;
+    User.setNewsletterUnsubscribe(email, code)
+      .then(result => {
+        request.flashRedirect("info", "You will no longer receive any newsletter emails from us.", "/newsletter-unsubscribe-success");
+      })
+      .catch(error => {
+        next(error);
+      });
+  });
 
 router.get("/newsletter-unsubscribe-success",
-(request, response, next) => {
-  response.render("newsletter-unsubscribe-success");
-});
+  (request, response, next) => {
+    response.render("newsletter-unsubscribe-success");
+  });
 
 module.exports = router;
