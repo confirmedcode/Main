@@ -307,7 +307,7 @@ describe("Subscription Controller", () => {
         });
       });
 
-      describe("Show trial text for new users", () => {
+      describe.skip("Show trial text for new users", () => {
         it("should show trial text", (done) => {
           Client.signupConfirmSignin()
             .then(response => {
@@ -621,7 +621,7 @@ describe("Subscription Controller", () => {
 
     describe("Failure", () => {
 
-      describe("Don't allow two trials", () => {
+      describe.skip("Don't allow two trials", () => {
         it("New user, create subscription, cancel it, create subscription again with old source", (done) => {
           Client.signinWithEmail()
             .then(response => {

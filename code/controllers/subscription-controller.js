@@ -80,7 +80,8 @@ router.get("/new-subscription",
   const browserLocale = request.getLocale() || "none";
   const paramLocale = request.values.locale || "none";
   // if user had any previous subscriptions, trial = false
-  var trial = true;
+  // var trial = true;
+  var trial = false; // disable trials for online subscriptions
   
   var referralsPercentOff = 0;
   // create a Stripe customer if doesn't exist
@@ -173,7 +174,7 @@ router.post("/new-subscription",
 (request, response, next) => {
   const source = request.values.source;
   const is3ds = request.values.is3ds;
-  const trial = request.values.trial;
+  const trial = false; // request.values.trial; // temporary workaround: disable online trial periods
   const plan = request.values.plan;
   const upgrade = request.values.upgrade;
   const browser = request.values.browser;
