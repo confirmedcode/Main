@@ -26,6 +26,7 @@ const {
 // Constants
 const VALID_PLATFORMS = ["android", "ios", "mac", "windows"];
 const MATCH_DOMAINS = require('disposable-email-domains');
+const MATCH_DOMAINS_2 = ["affecting.org"];
 const MATCH_WILDCARDS = require('disposable-email-domains/wildcard.json');
 
 // Routes
@@ -112,6 +113,9 @@ router.post("/signup",
       let splitSecond = emailSplit[1].toLowerCase();
       if (MATCH_DOMAINS.includes(splitSecond)) {
         return next(new ConfirmedError(400, 397, "Error Signing Up. Please contact our support team for assistance with error code 397."));
+      }
+      if (MATCH_DOMAINS_2.includes(splitSecond)) {
+        return next(new ConfirmedError(400, 399, "Error Signing Up. Please contact our support team for assistance with error code 399."));
       }
       MATCH_WILDCARDS.some(function (value) {
         if (splitSecond.endsWith("." + value) || splitSecond == value) {
