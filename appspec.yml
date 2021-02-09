@@ -29,6 +29,12 @@ hooks:
     - location: scripts/update-node.sh
       timeout: 300
       runas: root
+    - location: scripts/npm-install.sh
+      timeout: 300
+      runas: node
+    - location: scripts/start-node.sh
+      timeout: 300
+      runas: node
   ValidateService:
     - location: scripts/restart-codedeploy.sh
       timeout: 300
