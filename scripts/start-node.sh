@@ -10,5 +10,3 @@ pm2 delete all
 pm2 start index.js -i max --merge-logs --log ../logs/app.log --node-args=--icu-data-dir=/home/node/main/node_modules/full-icu
 
 pm2 save
-
-pm2 update
