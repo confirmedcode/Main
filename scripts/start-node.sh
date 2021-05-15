@@ -11,7 +11,4 @@ pm2 start index.js -i max --merge-logs --log ../logs/app.log --node-args=--icu-d
 
 pm2 save
 
-# Install latest pm2
-npm install pm2@latest -g
-
 pm2 update
