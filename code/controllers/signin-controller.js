@@ -131,6 +131,7 @@ router.post("/signin",
       }
     }
     //? request.values.partner.toLowerCase() : null;
+    Logger.info("sign in request:" + request);
     return User.getWithIAPReceipt(receiptData, receiptType, partner)
       .then(user => {
         request.session.regenerate(error => {
@@ -149,7 +150,10 @@ router.post("/signin",
           });
         });
       })
-      .catch( error => next(error) );
+      .catch( error =>  { 
+        Logger.error("culprit request: " + request);
+        return next(error)
+      });
   }
 });
 
